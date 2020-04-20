@@ -1,3 +1,14 @@
+## [0.0.2] - 2020-04-20
+
+### Added
+- script files for project configuration
+- script files for nginx container build
+- script file with global vars and functions
+- folders structure
+
+### Modified
+- CHANGELOG.md
+
 ## [0.0.1] - 2020-04-16
 
 ### Added
