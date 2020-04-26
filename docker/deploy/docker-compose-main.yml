@@ -3,15 +3,18 @@ services:
 
     #Nginx Service
     project-webserver:
-        image: nginx:alpine
+        build: ./../../docker/build/nginx
+        image: project/nginx
         container_name: project-webserver
         restart: unless-stopped
         ports:
-            - "host80:80"
-            - "host443:443"
+            - "host80"
+            - "host443"
         volumes:
             - ./../../src:/var/www
-            - ./../../docker/build/nginx/conf.d/:/etc/nginx/conf.d/
+            - ./../../docker/build/nginx/conf.d/nginxConf:/etc/nginx/conf.d/nginxConf
+            - ./../../docker/build/cert/localhost.pem:/etc/nginx/localhost.pem
+            - ./../../docker/build/cert/localhost.key:/etc/nginx/localhost.key
         networks:
             - project-network
 

@@ -1,3 +1,16 @@
+## [0.1.0] - 2020-04-26
+
+### Added
+- SSL self-signed certification
+- nginx Dockerfile
+- separate config for nginx
+- docker conf
+
+### Modified
+- CHANGELOG.md
+- nginx script
+- docker-compose
+
 ## [0.0.2] - 2020-04-20
 
 ### Added
