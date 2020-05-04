@@ -1,3 +1,14 @@
+## [0.1.1] - 2020-05-04
+
+### Added
+- php Dockerfile
+- php script
+
+### Modified
+- CHANGELOG.md
+- run script
+- docker-compose
+
 ## [0.1.0] - 2020-04-26
 
 ### Added
