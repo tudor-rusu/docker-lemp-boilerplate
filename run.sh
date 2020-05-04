@@ -11,6 +11,8 @@ source docker/functions.sh
 source docker/config.sh
 ####################### 2. build and deploy nginx
 source docker/build/nginx/nginx.sh
+####################### 3. build and deploy php
+source docker/build/php/php.sh
 
 # Docker run
 COMPOSER_LIST=($(echo "${COMPOSER_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
