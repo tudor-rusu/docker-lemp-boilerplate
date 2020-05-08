@@ -29,5 +29,5 @@ function replaceAllInFile() {
   search=$2
   replace=$3
 
-  sed -i "s/$search/$replace/g" "$file"
+  sed -i "s#$search#$replace#g" "$file"
 }
