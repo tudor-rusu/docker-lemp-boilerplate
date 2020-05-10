@@ -1,0 +1,28 @@
+version: '3'
+services:
+
+    #MySQL Service
+    project-mysql:
+        image: mysql:mysqlVersion
+        container_name: project-mysql
+        restart: unless-stopped
+        ports:
+            - "host3306"
+        environment:
+            MYSQL_DATABASE: mysqlDatabase
+            MYSQL_ROOT_PASSWORD: mysqlRootPassword
+        volumes:
+            - project-dbdata:/var/lib/mysql/
+            - ./../../docker/build/db/mysql/my.cnf:/etc/mysql/my.cnf
+        networks:
+            - project-network
+
+#Docker Networks
+networks:
+    project-network:
+        driver: bridge
+
+#Docker Volumes
+volumes:
+    project-dbdata:
+        driver: local
