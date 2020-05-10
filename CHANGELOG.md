@@ -1,3 +1,16 @@
+## [0.1.2] - 2020-05-10
+
+### Added
+- db.sh script for build and deploy DB container
+- mysql conf file
+- docker-compose-mysql
+
+### Modified
+- CHANGELOG.md
+- nginx, run and functions scripts
+- docker-compose-main 
+- php Dockerfile
+
 ## [0.1.1] - 2020-05-04
 
 ### Added
