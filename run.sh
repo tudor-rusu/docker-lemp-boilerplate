@@ -2,7 +2,7 @@
 # Main script
 set -e
 
-declare -a COMPOSER_LIST=("docker/deploy/docker-compose-main.yml")
+declare -a COMPOSE_LIST=("docker/deploy/docker-compose-main.yml")
 
 # include global vars and functions repository
 source docker/functions.sh
@@ -13,10 +13,12 @@ source docker/config.sh
 source docker/build/nginx/nginx.sh
 ####################### 3. build and deploy php
 source docker/build/php/php.sh
+####################### 4. build and deploy db
+source docker/build/db/db.sh
 
 # Docker run
-COMPOSER_LIST=($(echo "${COMPOSER_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-docker-compose $(printf -- "-f %s " "${COMPOSER_LIST[@]}") config > docker/deploy/docker-compose.yml
+COMPOSE_LIST=($(echo "${COMPOSE_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
+docker-compose $(printf -- "-f %s " "${COMPOSE_LIST[@]}") config > docker/deploy/docker-compose.yml
 
 docker-compose -f docker/deploy/docker-compose.yml up -d
 
@@ -34,3 +36,18 @@ then
   certutil -d sql:$HOME/.pki/nssdb -A -n "$PROJECT_URL Certification Authority" -i /tmp/$PROJECT_URL.der -t TCP,TCP,TCP
   rm /tmp/$PROJECT_URL* # remove all temporary files
 fi
+
+# Database user
+if [ ${dbEngine} == "MySQL" ]
+then
+    echo -en "\n"
+    echo "${RED}Create the user account that will be allowed to access this database and \
+        flush the privileges to notify the MySQL server of the changes${RESET}"
+    docker container exec -it $PROJECT_NAME-mysql mysql -uroot -p$MYSQL_ROOT_PASSWORD -e \
+        "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
+fi
+
+# Show the final result
+listString=("$projectUrl")
+drawResult "${listString}"
+echo "${RST}"

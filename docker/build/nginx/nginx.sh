@@ -5,6 +5,7 @@ set -e
 # include global vars and functions repository
 source docker/functions.sh
 source ./docker.conf # get configuration file
+projectUrl=""
 
 # build and deploy nginx
 echo "${BLU}Build the ${BLD}nginx${RST} ${BLU}container${RST}"
@@ -41,6 +42,7 @@ while true; do
         done
         replaceAllInFile docker/deploy/docker-compose-main.yml "host443" "$nginxHttpsHostPort:443"
         replaceAllInFile docker/deploy/docker-compose-main.yml nginxConf apps.conf
+        projectUrl="Project URL: https://$PROJECT_URL"
         echo "${BLU}Generate self-signed SSL Certificate for 365days${RST}"
         replaceAllInFile docker/deploy/docker-compose-main.yml localhost $PROJECT_URL
         openssl req -subj "/O=$PROJECT_NAME/CN=$PROJECT_URL" -addext "subjectAltName=DNS:$PROJECT_URL,DNS:www.$PROJECT_URL" -x509 -newkey rsa:4096 -nodes -keyout docker/build/cert/$PROJECT_URL.key -out docker/build/cert/$PROJECT_URL.pem -days 365
@@ -50,11 +52,21 @@ while true; do
         sed -i '/"host443"/d' docker/deploy/docker-compose-main.yml
         sed -i '/localhost./d' docker/deploy/docker-compose-main.yml
         replaceAllInFile docker/deploy/docker-compose-main.yml nginxConf app.conf
+        projectUrl="Project URL: http://$PROJECT_URL"
+        if [ $nginxHttpHostPort -ne 80 ]
+        then
+            projectUrl+=":$nginxHttpHostPort"
+        fi
         break;;
       * )
         sed -i '/"host443"/d' docker/deploy/docker-compose-main.yml
         sed -i '/localhost./d' docker/deploy/docker-compose-main.yml
         replaceAllInFile docker/deploy/docker-compose-main.yml nginxConf app.conf
+        projectUrl="Project URL: http://$PROJECT_URL"
+        if [ $nginxHttpHostPort -ne 80 ]
+        then
+            projectUrl+=":$nginxHttpHostPort"
+        fi
         break;;
   esac
 done
