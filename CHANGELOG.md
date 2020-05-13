@@ -1,3 +1,16 @@
+## [0.1.3] - 2020-05-13
+
+### Added
+- postgresql command extension file
+- docker-compose-postgresql.yml
+
+### Modified
+- CHANGELOG.md
+- functions script
+- docker-compose-main 
+- php Dockerfile
+- db.sh script for build and deploy DB container
+
 ## [0.1.2] - 2020-05-10
 
 ### Added
