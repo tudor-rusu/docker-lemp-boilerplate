@@ -31,6 +31,10 @@ RUN docker-php-ext-configure gd \
 RUN docker-php-ext-install gd
 mysqlExtensionsInstall
 mysqlExtensionsEnable
+postgresExtensionsUpdate
+postgresExtensionsPrerequisites
+postgresExtensionsConfigure
+postgresExtensionsInstall
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
