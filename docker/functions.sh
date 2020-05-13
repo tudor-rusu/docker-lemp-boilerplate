@@ -19,7 +19,7 @@ function replaceFileRow() {
   while IFS=$'\n' read -r p || [ -n "$p" ]
   do
     if [[ $p == *$search* ]]; then
-      sed -i "s/$p/$replace/g" "$file"
+      sed -i "s#$p#$replace#g" "$file"
     fi
   done < "$file"
 }
@@ -62,4 +62,20 @@ function drawResult() {
 
     printf "${GRN}\u2551${RST}%${interiorWidth}s${GRN}\u2551\n${RST}" "$(printf \\$(printf '%03o' 32))"
     printf "${GRN}\u255A$(printf '\u2550%0.s' $(seq $interiorWidth))\u255D\n${RST}"
+}
+
+function removeMysql() {
+    sed -i '/mysqlExtensionsInstall/d' docker/build/php/Dockerfile
+    sed -i '/mysqlExtensionsEnable/d' docker/build/php/Dockerfile
+    sed -i '/MySQL/d' ./docker.conf
+    sed -i '/MYSQL/d' ./docker.conf
+}
+
+function removePostgres() {
+    sed -i '/postgresExtensionsUpdate/d' docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsPrerequisites/d' docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsConfigure/d' docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsInstall/d' docker/build/php/Dockerfile
+    sed -i '/PostgreSQL/d' ./docker.conf
+    sed -i '/POSTGRES/d' ./docker.conf
 }
