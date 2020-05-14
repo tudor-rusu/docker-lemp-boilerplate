@@ -3,7 +3,7 @@
 set -e
 
 # include global vars and functions repository
-source docker/functions.sh
+source .docker/functions.sh
 
 # set the project configuration
 echo "${BLU}Set the project configuration${RST}"

@@ -13,7 +13,7 @@ services:
             MYSQL_ROOT_PASSWORD: mysqlRootPassword
         volumes:
             - project-dbdata:/var/lib/mysql/
-            - ./../../docker/build/db/mysql/my.cnf:/etc/mysql/my.cnf
+            - ./../../.docker/build/db/mysql/my.cnf:/etc/mysql/my.cnf
         networks:
             - project-network
 
