@@ -79,3 +79,9 @@ function removePostgres() {
     sed -i '/PostgreSQL/d' ./docker.conf
     sed -i '/POSTGRES/d' ./docker.conf
 }
+
+function removeSqlite() {
+    sed -i '/sqliteExtensionsUpdate/d' .docker/build/php/Dockerfile
+    sed -i '/sqliteExtensionsPrerequisites/d' .docker/build/php/Dockerfile
+    sed -i '/sqliteExtensionsInstall/d' .docker/build/php/Dockerfile
+}

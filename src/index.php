@@ -7,8 +7,14 @@ $dbuser = 'dev';
 $dbpass = 'dev';
 $dbhost = 'project-postgresql';
 
+// SQLite
+$ver = SQLite3::version();
+echo $ver['versionString'] . "<br />\n";
+echo $ver['versionNumber'] . "<br />\n";
+print_r($ver);
+
 // PostgreSQL test
-$db_connection = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass") or die("Unable to Connect to '$dbhost'");
+//$db_connection = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass") or die("Unable to Connect to '$dbhost'");
 
 // MySQL test
 //$connect = mysqli_connect($dbhost, $dbuser, $dbpass) or die("Unable to Connect to '$dbhost'");
