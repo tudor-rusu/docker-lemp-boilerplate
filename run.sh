@@ -2,25 +2,25 @@
 # Main script
 set -e
 
-declare -a COMPOSE_LIST=("docker/deploy/docker-compose-main.yml")
+declare -a COMPOSE_LIST=(".docker/deploy/docker-compose-main.yml")
 
 # include global vars and functions repository
-source docker/functions.sh
+source .docker/functions.sh
 
 ####################### 1. set the config
-source docker/config.sh
+source .docker/config.sh
 ####################### 2. build and deploy nginx
-source docker/build/nginx/nginx.sh
+source .docker/build/nginx/nginx.sh
 ####################### 3. build and deploy php
-source docker/build/php/php.sh
+source .docker/build/php/php.sh
 ####################### 4. build and deploy db
-source docker/build/db/db.sh
+source .docker/build/db/db.sh
 
 # Docker run
 COMPOSE_LIST=($(echo "${COMPOSE_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
-docker-compose $(printf -- "-f %s " "${COMPOSE_LIST[@]}") config > docker/deploy/docker-compose.yml
+docker-compose $(printf -- "-f %s " "${COMPOSE_LIST[@]}") config > .docker/deploy/docker-compose.yml
 
-docker-compose -f docker/deploy/docker-compose.yml up -d
+docker-compose -f .docker/deploy/docker-compose.yml up -d
 
 # register SSL certificate if is set HTTPS Protocol
 if [ $httpProtocol == 'https' ]
@@ -38,7 +38,7 @@ then
 fi
 
 # Database user
-if [ ${dbEngine} == "MySQL" ]
+if [[ -n "$dbEngine" && ${dbEngine} == "MySQL" ]]
 then
     echo -en "\n"
     echo "${RED}Create the user account that will be allowed to access this database and \

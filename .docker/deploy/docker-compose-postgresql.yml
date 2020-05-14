@@ -16,7 +16,7 @@ services:
             - PGDATA=/var/lib/postgresql/data/pgdata
         volumes:
             - project-pgdata:/var/lib/postgresql/
-            - ./../../docker/build/db/postgres/:/docker-entrypoint-initdb.d/
+            - ./../../.docker/build/db/postgres/:/docker-entrypoint-initdb.d/
         networks:
             - project-network
 

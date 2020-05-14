@@ -3,13 +3,13 @@
 set -e
 
 # include global vars and functions repository
-source docker/functions.sh
+source .docker/functions.sh
 source ./docker.conf # get configuration file
 projectUrl=""
 
 # build and deploy nginx
 echo "${BLU}Build the ${BLD}nginx${RST} ${BLU}container${RST}"
-replaceAllInFile docker/deploy/docker-compose-main.yml project $PROJECT_NAME
+replaceAllInFile .docker/deploy/docker-compose-main.yml project $PROJECT_NAME
 
 httpProtocol='http'
 # HTTP
@@ -22,7 +22,7 @@ do
     break
   fi
 done
-replaceAllInFile docker/deploy/docker-compose-main.yml "host80" "$nginxHttpHostPort:80"
+replaceAllInFile .docker/deploy/docker-compose-main.yml "host80" "$nginxHttpHostPort:80"
 echo "${GRN}HTTP settings have been made successfully.${RST}"
 
 # HTTPS
@@ -40,18 +40,18 @@ while true; do
             break
           fi
         done
-        replaceAllInFile docker/deploy/docker-compose-main.yml "host443" "$nginxHttpsHostPort:443"
-        replaceAllInFile docker/deploy/docker-compose-main.yml nginxConf apps.conf
+        replaceAllInFile .docker/deploy/docker-compose-main.yml "host443" "$nginxHttpsHostPort:443"
+        replaceAllInFile .docker/deploy/docker-compose-main.yml nginxConf apps.conf
         projectUrl="Project URL: https://$PROJECT_URL"
         echo "${BLU}Generate self-signed SSL Certificate for 365days${RST}"
-        replaceAllInFile docker/deploy/docker-compose-main.yml localhost $PROJECT_URL
-        openssl req -subj "/O=$PROJECT_NAME/CN=$PROJECT_URL" -addext "subjectAltName=DNS:$PROJECT_URL,DNS:www.$PROJECT_URL" -x509 -newkey rsa:4096 -nodes -keyout docker/build/cert/$PROJECT_URL.key -out docker/build/cert/$PROJECT_URL.pem -days 365
+        replaceAllInFile .docker/deploy/docker-compose-main.yml localhost $PROJECT_URL
+        openssl req -subj "/O=$PROJECT_NAME/CN=$PROJECT_URL" -addext "subjectAltName=DNS:$PROJECT_URL,DNS:www.$PROJECT_URL" -x509 -newkey rsa:4096 -nodes -keyout .docker/build/cert/$PROJECT_URL.key -out .docker/build/cert/$PROJECT_URL.pem -days 365
         echo "${GRN}HTTPS settings have been made successfully.${RST}"
         break;;
       [Nn]* )
-        sed -i '/"host443"/d' docker/deploy/docker-compose-main.yml
-        sed -i '/localhost./d' docker/deploy/docker-compose-main.yml
-        replaceAllInFile docker/deploy/docker-compose-main.yml nginxConf app.conf
+        sed -i '/"host443"/d' .docker/deploy/docker-compose-main.yml
+        sed -i '/localhost./d' .docker/deploy/docker-compose-main.yml
+        replaceAllInFile .docker/deploy/docker-compose-main.yml nginxConf app.conf
         projectUrl="Project URL: http://$PROJECT_URL"
         if [ $nginxHttpHostPort -ne 80 ]
         then
@@ -59,9 +59,9 @@ while true; do
         fi
         break;;
       * )
-        sed -i '/"host443"/d' docker/deploy/docker-compose-main.yml
-        sed -i '/localhost./d' docker/deploy/docker-compose-main.yml
-        replaceAllInFile docker/deploy/docker-compose-main.yml nginxConf app.conf
+        sed -i '/"host443"/d' .docker/deploy/docker-compose-main.yml
+        sed -i '/localhost./d' .docker/deploy/docker-compose-main.yml
+        replaceAllInFile .docker/deploy/docker-compose-main.yml nginxConf app.conf
         projectUrl="Project URL: http://$PROJECT_URL"
         if [ $nginxHttpHostPort -ne 80 ]
         then
@@ -81,10 +81,10 @@ then
           echo ${GRN}
           printf '\n%s\n%s' "# Project $PROJECT_NAME" "127.0.0.1 $PROJECT_URL" | sudo tee -a /etc/hosts
           echo ${RST}
-          replaceAllInFile docker/build/nginx/conf.d/app.conf localhost $PROJECT_URL
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf localhost $PROJECT_URL
           if [ ${httpProtocol} == 'https' ]
           then
-            replaceAllInFile docker/build/nginx/conf.d/apps.conf localhost $PROJECT_URL
+            replaceAllInFile .docker/build/nginx/conf.d/apps.conf localhost $PROJECT_URL
           fi
           echo "${GRN}Project URL($PROJECT_URL) have been add successfully.${RST}"
           break;;

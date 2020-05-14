@@ -65,17 +65,17 @@ function drawResult() {
 }
 
 function removeMysql() {
-    sed -i '/mysqlExtensionsInstall/d' docker/build/php/Dockerfile
-    sed -i '/mysqlExtensionsEnable/d' docker/build/php/Dockerfile
+    sed -i '/mysqlExtensionsInstall/d' .docker/build/php/Dockerfile
+    sed -i '/mysqlExtensionsEnable/d' .docker/build/php/Dockerfile
     sed -i '/MySQL/d' ./docker.conf
     sed -i '/MYSQL/d' ./docker.conf
 }
 
 function removePostgres() {
-    sed -i '/postgresExtensionsUpdate/d' docker/build/php/Dockerfile
-    sed -i '/postgresExtensionsPrerequisites/d' docker/build/php/Dockerfile
-    sed -i '/postgresExtensionsConfigure/d' docker/build/php/Dockerfile
-    sed -i '/postgresExtensionsInstall/d' docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsUpdate/d' .docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsPrerequisites/d' .docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsConfigure/d' .docker/build/php/Dockerfile
+    sed -i '/postgresExtensionsInstall/d' .docker/build/php/Dockerfile
     sed -i '/PostgreSQL/d' ./docker.conf
     sed -i '/POSTGRES/d' ./docker.conf
 }
