@@ -1,3 +1,11 @@
+## [0.1.4] - 2020-05-14
+
+### Modified
+- CHANGELOG.md
+- functions script
+- php Dockerfile
+- db.sh script for implement SQLite
+
 ## [0.1.3] - 2020-05-13
 
 ### Added
