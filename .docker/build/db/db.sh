@@ -24,11 +24,12 @@ then
     sed -i '/dbContainerName/d' .docker/deploy/docker-compose-main.yml
     removeMysql #remove MySQL
     removePostgres #remove PostgreSQL
+    removeSqlite #remove SQLite
 else
     echo "${BLU}Build the ${BLD}db${RST} ${BLU}container${RST}"
     # chose the DB engine
     PS3="Please enter your choice: "
-    options=("MySQL" "PostgreSQL" "SQLite3" "Quit")
+    options=("MySQL" "PostgreSQL" "SQLite" "Quit")
     select opt in "${options[@]}"
     do
         case $opt in
@@ -40,7 +41,7 @@ else
                 dbEngine="$opt"
                 break
                 ;;
-            "SQLite3")
+            "SQLite")
                 dbEngine="$opt"
                 break
                 ;;
@@ -63,13 +64,14 @@ else
     if [ ${dbEngine} == "MySQL" ]
     then
         COMPOSE_LIST+=(".docker/deploy/docker-compose-mysql.yml")
-        replaceFileRow .docker/build/php/Dockerfile "mysqlExtensionsInstall" "RUN docker-php-ext-install pdo_mysql mysqli";
+        replaceFileRow .docker/build/php/Dockerfile "mysqlExtensionsInstall" "RUN docker-php-ext-install pdo pdo_mysql mysqli";
         replaceFileRow .docker/build/php/Dockerfile "mysqlExtensionsEnable" "RUN docker-php-ext-enable mysqli";
         replaceFileRow ./docker.conf "MYSQL_HOST" "MYSQL_HOST='$PROJECT_NAME-mysql'";
         replaceAllInFile .docker/deploy/docker-compose-main.yml dbContainerName "$PROJECT_NAME-mysql"
         replaceAllInFile .docker/deploy/docker-compose-mysql.yml project $PROJECT_NAME
         # remove other DB engines
         removePostgres #remove PostgreSQL
+        removeSqlite #remove SQLite
         while true; do
             read -rp "Actual project MySQL version is ${REV}$MYSQL_VERSION${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
             case $yn in
@@ -129,6 +131,7 @@ else
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml project $PROJECT_NAME
         # remove other DB engines
         removeMysql #remove MySQL
+        removeSqlite #remove SQLite
         while true; do
             read -rp "Actual project PostgreSQL version is ${REV}$POSTGRES_VERSION${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
             case $yn in
@@ -175,6 +178,19 @@ else
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresPassword $POSTGRES_PASSWORD
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresHoastAuthMethod $POSTGRES_HOST_AUTH_METHOD
         printf '\n%s\n' "${GRN}PostgreSQL build and deploy have been made successfully.${RST}"
+    fi
+
+    # SQLite
+    if [ ${dbEngine} == "SQLite" ]
+    then
+        replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsUpdate" "RUN apt-get update";
+        replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsPrerequisites" "RUN apt-get install -y sqlite3 libsqlite3-dev";
+        replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsInstall" "RUN docker-php-ext-install pdo_sqlite";
+        # remove other DB engines
+        removeMysql #remove MySQL
+        removePostgres #remove PostgreSQL
+        sed -i '/dbContainerName/d' .docker/deploy/docker-compose-main.yml
+        printf '\n%s\n' "${GRN}SQLite build and deploy have been made successfully.${RST}"
     fi
 
 fi
