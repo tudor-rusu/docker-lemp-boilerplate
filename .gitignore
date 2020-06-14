@@ -1,1 +1,4 @@
 .idea/
+/tmp/
+/src/.env
+/.docker/deploy/docker-compose.yml
