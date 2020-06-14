@@ -67,8 +67,8 @@ function drawResult() {
 function removeMysql() {
     sed -i '/mysqlExtensionsInstall/d' .docker/build/php/Dockerfile
     sed -i '/mysqlExtensionsEnable/d' .docker/build/php/Dockerfile
-    sed -i '/MySQL/d' ./docker.conf
-    sed -i '/MYSQL/d' ./docker.conf
+    sed -i '/MySQL/d' src/.env
+    sed -i '/MYSQL/d' src/.env
 }
 
 function removePostgres() {
@@ -76,12 +76,44 @@ function removePostgres() {
     sed -i '/postgresExtensionsPrerequisites/d' .docker/build/php/Dockerfile
     sed -i '/postgresExtensionsConfigure/d' .docker/build/php/Dockerfile
     sed -i '/postgresExtensionsInstall/d' .docker/build/php/Dockerfile
-    sed -i '/PostgreSQL/d' ./docker.conf
-    sed -i '/POSTGRES/d' ./docker.conf
+    sed -i '/PostgreSQL/d' src/.env
+    sed -i '/POSTGRES/d' src/.env
 }
 
 function removeSqlite() {
     sed -i '/sqliteExtensionsUpdate/d' .docker/build/php/Dockerfile
     sed -i '/sqliteExtensionsPrerequisites/d' .docker/build/php/Dockerfile
     sed -i '/sqliteExtensionsInstall/d' .docker/build/php/Dockerfile
+}
+
+function checkLocalOs() {
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        systemType="Linux"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        systemType="Mac OSX"
+    elif [[ "$OSTYPE" == "cygwin" ]]; then
+        systemType="Cygwin"
+    elif [[ "$OSTYPE" == "msys" ]]; then
+        systemType="Windows"
+    elif [[ "$OSTYPE" == "win32" ]]; then
+        systemType="Windows"
+    elif [[ "$OSTYPE" == "freebsd"* ]]; then
+        systemType="Freebsd"
+    else
+        systemType="Unknown"
+    fi
+    echo ${systemType}
+}
+
+# If running on bash for Windows, any argument starting with a forward slash is automatically
+# interpreted as a drive path. To stop that, you can prefix with 2 forward slashes instead
+# of 1 - but in the specific case of openssl, that causes the first CN segment key to be read as
+# "/O" instead of "O", and is skipped. We work around that by prefixing with a spurious segment,
+# which will be skipped by openssl
+function fixupCnSubject() {
+    local result="${1}"
+    case $OSTYPE in
+        msys|win32) result="//XX=x${result}"
+    esac
+    echo "$result"
 }
