@@ -1,3 +1,19 @@
+## [0.1.5] - 2020-06-14
+
+### Added
+- .env files
+
+### Removed
+- docker.conf file
+
+### Modified
+- CHANGELOG.md and REDME.md
+- run.sh script
+- index.php
+- functions and config scripts
+- nginx, php and db scripts
+- .gitignore
+
 ## [0.1.4] - 2020-05-14
 
 ### Modified
