@@ -2,40 +2,40 @@ version: '3'
 services:
 
     #Redis Service
-    lemp-redis:
+    project-redis:
         image: redis:latest
-        container_name: lemp-redis
+        container_name: project-redis
         restart: unless-stopped
         ports:
-            - "6379:6379"
+            - "hostRedis"
         command: ["redis-server", "--appendonly", "yes"]
         volumes:
-            - lemp-redisdata:/data
+            - project-redisdata:/data
         networks:
-            - lemp-network
+            - project-network
 
     #Redis Commander Service
-    lemp-redis-commander:
+    project-redis-commander:
         image: rediscommander/redis-commander:latest
-        container_name: lemp-redis-commander
+        container_name: project-redis-commander
         restart: unless-stopped
         ports:
-            - "8081:8081"
+            - "hostCommander"
         environment:
-            - REDIS_HOSTS=local:lemp-redis:6379
-            - HTTP_USER=admin
-            - HTTP_PASSWORD=321
+            - REDIS_HOSTS=local:project-redis:portRedis
+            - HTTP_USER=redisUser
+            - HTTP_PASSWORD=redisPassword
         depends_on:
-            - lemp-redis
+            - project-redis
         networks:
-            - lemp-network
+            - project-network
 
 #Docker Networks
 networks:
-    lemp-network:
+    project-network:
         driver: bridge
 
 #Docker Volumes
 volumes:
-    lemp-redisdata:
+    project-redisdata:
         driver: local
