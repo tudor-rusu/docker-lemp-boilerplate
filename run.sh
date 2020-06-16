@@ -15,6 +15,8 @@ source .docker/build/nginx/nginx.sh
 source .docker/build/php/php.sh
 ####################### 4. build and deploy db
 source .docker/build/db/db.sh
+####################### 5. build and deploy db tools
+source .docker/build/db/tools/dbtools.sh
 
 # Docker run
 COMPOSE_LIST=($(echo "${COMPOSE_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
@@ -71,5 +73,9 @@ fi
 
 # Show the final result
 listString=("$projectUrl")
+if [[ ! -z "$redisUrl" ]]
+then
+    listString+=( "$redisUrl" )
+fi
 drawResult "${listString}"
 echo "${RST}"

@@ -86,6 +86,15 @@ function removeSqlite() {
     sed -i '/sqliteExtensionsInstall/d' .docker/build/php/Dockerfile
 }
 
+function removeTools() {
+    removeRedis
+}
+
+function removeRedis() {
+    sed -i '/Redis/d' src/.env
+    sed -i '/REDIS/d' src/.env
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"
@@ -116,4 +125,12 @@ function fixupCnSubject() {
         msys|win32) result="//XX=x${result}"
     esac
     echo "$result"
+}
+
+menuMultiple() {
+    echo "Avaliable options:"
+    for i in ${!options[@]}; do
+        printf "%3d%s) %s\n" $((i+1)) "${choices[i]:- }" "${options[i]}"
+    done
+    if [[ "$msg" ]]; then echo "$msg"; fi
 }
