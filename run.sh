@@ -68,14 +68,20 @@ if [[ -n "$dbEngine" && ${dbEngine} == "MySQL" ]]
 then
     echo -en "\n"
     echo "${RED}Create the user account that will be allowed to access this database and flush the privileges to notify the MySQL server of the changes${RESET}"
+    docker container exec -it $PROJECT_NAME-mysql mysql -uroot -p$MYSQL_ROOT_PASSWORD
     docker container exec -it $PROJECT_NAME-mysql mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
 fi
 
+#projectUrl="Project URL: https://lemp.loc"
 # Show the final result
 listString=("$projectUrl")
 if [[ ! -z "$redisUrl" ]]
 then
     listString+=( "$redisUrl" )
+fi
+if [[ ! -z "$phpmyadminUrl" ]]
+then
+    listString+=( "$phpmyadminUrl" )
 fi
 drawResult "${listString}"
 echo "${RST}"

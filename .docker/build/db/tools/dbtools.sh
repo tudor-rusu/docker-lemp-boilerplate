@@ -128,6 +128,31 @@ then
     done
     redisUrl="Redis URL: http://$PROJECT_URL:$redisCommanderHostPort"
 else
-    printf '%s\n' "${RED}There is no DB engine, Redis will not be installed.${RST}"
+    printf '%s\n' "${RED}Redis was not selected and will not be installed.${RST}"
     removeRedis #remove Redis
+fi
+
+# phpMyAdmin
+phpmyadminUrl=""
+if [[ "${toolsList[@]}" =~ "phpMyAdmin" ]];
+then
+    COMPOSE_LIST+=(".docker/deploy/docker-compose-phpMyAdmin.yml")
+    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml project $PROJECT_NAME
+    phpMyAdminHostPort=8082
+    for port in $PMA_PORTS
+    do
+      if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
+      then
+        phpMyAdminHostPort=${port}
+        break
+      fi
+    done
+    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml "hostphpMyAdmin" "$phpMyAdminHostPort:80"
+    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml mysqlHost "$MYSQL_HOST"
+    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml mysqlRootPassword "$MYSQL_ROOT_PASSWORD"
+    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml dbContainerName "$PROJECT_NAME-mysql"
+    phpmyadminUrl="phpMyAdmin URL: http://$PROJECT_URL:$phpMyAdminHostPort"
+else
+    printf '%s\n' "${RED}phpMyAdmin was not selected and will not be installed.${RST}"
+    removePhpMyAdmin #remove phpMyAdmin
 fi

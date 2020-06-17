@@ -88,11 +88,17 @@ function removeSqlite() {
 
 function removeTools() {
     removeRedis
+    removePhpMyAdmin
 }
 
 function removeRedis() {
     sed -i '/Redis/d' src/.env
     sed -i '/REDIS/d' src/.env
+}
+
+function removePhpMyAdmin() {
+    sed -i '/phpMyAdmin/d' src/.env
+    sed -i '/PMA/d' src/.env
 }
 
 function checkLocalOs() {

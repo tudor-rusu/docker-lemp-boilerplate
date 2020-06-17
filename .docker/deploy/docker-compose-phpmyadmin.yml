@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+    #phpMyAdmin Service
+    project-phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: project-phpmyadmin
+        restart: unless-stopped
+        ports:
+            - "hostphpMyAdmin"
+        environment:
+            - PMA_HOST=mysqlHost
+            - MYSQL_ROOT_PASSWORD=mysqlRootPassword
+        depends_on:
+            - dbContainerName
+        networks:
+            - project-network
+
+#Docker Networks
+networks:
+    project-network:
+        driver: bridge
