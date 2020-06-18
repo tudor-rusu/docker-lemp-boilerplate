@@ -7,7 +7,7 @@ source .docker/functions.sh
 source src/.env # get configuration file
 
 dbToolsSupport=false
-dbEngine="MySQL"
+#dbEngine="PostgreSQL"
 while true; do
     read -rp "Do you want to add DB Tools to the project? ${RED}[y/N]${RST}: " yn
     case ${yn} in
@@ -133,26 +133,61 @@ else
 fi
 
 # phpMyAdmin
-phpmyadminUrl=""
-if [[ "${toolsList[@]}" =~ "phpMyAdmin" ]];
+if [[ -n "$dbEngine" && ${dbEngine} == "MySQL" ]]
 then
-    COMPOSE_LIST+=(".docker/deploy/docker-compose-phpMyAdmin.yml")
-    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml project $PROJECT_NAME
-    phpMyAdminHostPort=8082
-    for port in $PMA_PORTS
-    do
-      if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
-      then
-        phpMyAdminHostPort=${port}
-        break
-      fi
-    done
-    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml "hostphpMyAdmin" "$phpMyAdminHostPort:80"
-    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml mysqlHost "$MYSQL_HOST"
-    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml mysqlRootPassword "$MYSQL_ROOT_PASSWORD"
-    replaceAllInFile .docker/deploy/docker-compose-phpMyAdmin.yml dbContainerName "$PROJECT_NAME-mysql"
-    phpmyadminUrl="phpMyAdmin URL: http://$PROJECT_URL:$phpMyAdminHostPort"
+    phpmyadminUrl=""
+    if [[ "${toolsList[@]}" =~ "phpMyAdmin" ]];
+    then
+        COMPOSE_LIST+=(".docker/deploy/docker-compose-phpmyadmin.yml")
+        replaceAllInFile .docker/deploy/docker-compose-phpmyadmin.yml project $PROJECT_NAME
+        phpMyAdminHostPort=8082
+        for port in $PMA_PORTS
+        do
+          if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
+          then
+            phpMyAdminHostPort=${port}
+            break
+          fi
+        done
+        replaceAllInFile .docker/deploy/docker-compose-phpmyadmin.yml "hostphpMyAdmin" "$phpMyAdminHostPort:80"
+        replaceAllInFile .docker/deploy/docker-compose-phpmyadmin.yml mysqlHost "$MYSQL_HOST"
+        replaceAllInFile .docker/deploy/docker-compose-phpmyadmin.yml mysqlRootPassword "$MYSQL_ROOT_PASSWORD"
+        replaceAllInFile .docker/deploy/docker-compose-phpmyadmin.yml dbContainerName "$PROJECT_NAME-mysql"
+        phpmyadminUrl="phpMyAdmin URL: http://$PROJECT_URL:$phpMyAdminHostPort"
+    else
+        printf '%s\n' "${RED}phpMyAdmin was not selected and will not be installed.${RST}"
+        removePhpMyAdmin #remove phpMyAdmin
+    fi
 else
-    printf '%s\n' "${RED}phpMyAdmin was not selected and will not be installed.${RST}"
     removePhpMyAdmin #remove phpMyAdmin
+fi
+
+# phpPgAdmin
+if [[ -n "$dbEngine" && ${dbEngine} == "PostgreSQL" ]]
+then
+    phppgadminUrl=""
+    if [[ "${toolsList[@]}" =~ "phpPgAdmin" ]];
+    then
+        COMPOSE_LIST+=(".docker/deploy/docker-compose-phppgadmin.yml")
+        replaceAllInFile .docker/deploy/docker-compose-phppgadmin.yml project $PROJECT_NAME
+        phpPgAdminHostPort=8082
+        for port in $PGA_PORTS
+        do
+          if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
+          then
+            phpPgAdminHostPort=${port}
+            break
+          fi
+        done
+        replaceAllInFile .docker/deploy/docker-compose-phppgadmin.yml "hostphppgadmin" "$phpPgAdminHostPort:80"
+        replaceAllInFile .docker/deploy/docker-compose-phppgadmin.yml phppgadminHost "$POSTGRES_HOST"
+        replaceAllInFile .docker/deploy/docker-compose-phppgadmin.yml phppgadminDb "$POSTGRES_DATABASE"
+        replaceAllInFile .docker/deploy/docker-compose-phppgadmin.yml dbContainerName "$PROJECT_NAME-postgresql"
+        phppgadminUrl="phpMyAdmin URL: http://$PROJECT_URL:$phpPgAdminHostPort"
+    else
+        printf '%s\n' "${RED}phpMyAdmin was not selected and will not be installed.${RST}"
+        removePhpPgAdmin #remove phpPgAdmin
+    fi
+else
+    removePhpPgAdmin #remove phpPgAdmin
 fi

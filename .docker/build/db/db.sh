@@ -176,7 +176,7 @@ else
         done
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresUser $POSTGRES_USER
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresPassword $POSTGRES_PASSWORD
-        replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresHostAuthMethod $POSTGRES_HOST_AUTH_METHOD
+        replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresHostAuthMethod $POSTGRES_AUTH_METHOD
         printf '\n%s\n' "${GRN}PostgreSQL build and deploy have been made successfully.${RST}"
     fi
 
