@@ -1,3 +1,20 @@
+## [0.2.0] - 2020-06-20
+
+### Added
+- dbtools.sh script
+- docker-compose-phpliteadmin.yml
+- docker-compose-phpmyadmin.yml  
+- docker-compose-phppgadmin.yml
+- docker-compose-redis.yml
+
+### Modified
+- CHANGELOG.md
+- run.sh script
+- index.php
+- functions script
+- db script
+- .env.dist
+
 ## [0.1.5] - 2020-06-14
 
 ### Added
