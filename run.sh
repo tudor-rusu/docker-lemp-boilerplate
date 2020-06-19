@@ -71,7 +71,6 @@ then
     docker container exec -it $PROJECT_NAME-mysql mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
 fi
 
-#projectUrl="Project URL: https://lemp.loc"
 # Show the final result
 listString=("$projectUrl")
 if [[ ! -z "$redisUrl" ]]
@@ -85,6 +84,10 @@ fi
 if [[ ! -z "$phppgadminUrl" ]]
 then
     listString+=( "$phppgadminUrl" )
+fi
+if [[ ! -z "$phpliteadminUrl" ]]
+then
+    listString+=( "$phpliteadminUrl" )
 fi
 drawResult "${listString}"
 echo "${RST}"

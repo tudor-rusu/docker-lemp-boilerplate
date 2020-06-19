@@ -219,10 +219,10 @@ then
                 replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml sqlLiteDbPath ${newDbPath,,}
                 break;;
             [Nn]* )
-                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml redisUser $PLA_DB_PATH
+                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml sqlLiteDbPath $PLA_DB_PATH
                 break;;
             * )
-                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml redisUser $PLA_DB_PATH
+                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml sqlLiteDbPath $PLA_DB_PATH
                 break;;
         esac
     done
