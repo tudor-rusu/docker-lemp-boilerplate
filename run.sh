@@ -15,6 +15,8 @@ source .docker/build/nginx/nginx.sh
 source .docker/build/php/php.sh
 ####################### 4. build and deploy db
 source .docker/build/db/db.sh
+####################### 5. build and deploy db tools
+source .docker/build/db/dbtools.sh
 
 # Docker run
 COMPOSE_LIST=($(echo "${COMPOSE_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
@@ -66,10 +68,26 @@ if [[ -n "$dbEngine" && ${dbEngine} == "MySQL" ]]
 then
     echo -en "\n"
     echo "${RED}Create the user account that will be allowed to access this database and flush the privileges to notify the MySQL server of the changes${RESET}"
-    docker container exec -it $PROJECT_NAME-mysql mysql -uroot -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
+    docker container exec -it $PROJECT_NAME-mysql mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
 fi
 
 # Show the final result
 listString=("$projectUrl")
+if [[ ! -z "$redisUrl" ]]
+then
+    listString+=( "$redisUrl" )
+fi
+if [[ ! -z "$phpmyadminUrl" ]]
+then
+    listString+=( "$phpmyadminUrl" )
+fi
+if [[ ! -z "$phppgadminUrl" ]]
+then
+    listString+=( "$phppgadminUrl" )
+fi
+if [[ ! -z "$phpliteadminUrl" ]]
+then
+    listString+=( "$phpliteadminUrl" )
+fi
 drawResult "${listString}"
 echo "${RST}"

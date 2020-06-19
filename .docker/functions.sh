@@ -86,6 +86,32 @@ function removeSqlite() {
     sed -i '/sqliteExtensionsInstall/d' .docker/build/php/Dockerfile
 }
 
+function removeTools() {
+    removeRedis
+    removePhpMyAdmin
+    removePhpPgAdmin
+    removePhpLiteAdmin
+}
+
+function removeRedis() {
+    sed -i '/Redis/d' src/.env
+    sed -i '/REDIS/d' src/.env
+}
+
+function removePhpMyAdmin() {
+    sed -i '/phpMyAdmin/d' src/.env
+    sed -i '/PMA/d' src/.env
+}
+
+function removePhpPgAdmin() {
+    sed -i '/phpPgAdmin/d' src/.env
+    sed -i '/PGA/d' src/.env
+}
+function removePhpLiteAdmin() {
+    sed -i '/phpLiteAdmin/d' src/.env
+    sed -i '/PLA/d' src/.env
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"
@@ -116,4 +142,12 @@ function fixupCnSubject() {
         msys|win32) result="//XX=x${result}"
     esac
     echo "$result"
+}
+
+menuMultiple() {
+    echo "Avaliable options:"
+    for i in ${!options[@]}; do
+        printf "%3d%s) %s\n" $((i+1)) "${choices[i]:- }" "${options[i]}"
+    done
+    if [[ "$msg" ]]; then echo "$msg"; fi
 }

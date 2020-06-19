@@ -176,7 +176,7 @@ else
         done
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresUser $POSTGRES_USER
         replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresPassword $POSTGRES_PASSWORD
-        replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresHostAuthMethod $POSTGRES_HOST_AUTH_METHOD
+        replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresHostAuthMethod $POSTGRES_AUTH_METHOD
         printf '\n%s\n' "${GRN}PostgreSQL build and deploy have been made successfully.${RST}"
     fi
 
@@ -185,7 +185,7 @@ else
     then
         replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsUpdate" "RUN apt-get update";
         replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsPrerequisites" "RUN apt-get install -y sqlite3 libsqlite3-dev";
-        replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsInstall" "RUN docker-php-ext-install pdo_sqlite";
+        replaceFileRow .docker/build/php/Dockerfile "sqliteExtensionsInstall" "RUN docker-php-ext-install pdo pdo_sqlite";
         # remove other DB engines
         removeMysql #remove MySQL
         removePostgres #remove PostgreSQL
