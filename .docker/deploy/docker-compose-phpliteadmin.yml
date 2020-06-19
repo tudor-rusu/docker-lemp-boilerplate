@@ -1,0 +1,19 @@
+version: '3'
+services:
+
+    #phpLiteAdmin Service
+    project-phpliteadmin:
+        image: acttaiwan/phpliteadmin
+        container_name: project-phpliteadmin
+        restart: unless-stopped
+        ports:
+            - "hostphpLiteAdmin"
+        volumes:
+            - ./../../src/sqlLiteDbPath:/db
+        networks:
+            - project-network
+
+#Docker Networks
+networks:
+    project-network:
+        driver: bridge

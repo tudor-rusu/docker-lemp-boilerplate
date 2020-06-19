@@ -191,3 +191,46 @@ then
 else
     removePhpPgAdmin #remove phpPgAdmin
 fi
+
+# phpLiteAdmin
+if [[ -n "$dbEngine" && ${dbEngine} == "SQLite" ]]
+then
+    phpliteadminUrl=""
+    if [[ "${toolsList[@]}" =~ "phpLiteAdmin" ]];
+    then
+        COMPOSE_LIST+=(".docker/deploy/docker-compose-phpliteadmin.yml")
+        replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml project $PROJECT_NAME
+        phpLiteAdminHostPort=2015
+        for port in $PLA_PORTS
+        do
+          if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
+          then
+            phpLiteAdminHostPort=${port}
+            break
+          fi
+        done
+        replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml "hostphpLiteAdmin" "$phpLiteAdminHostPort:2015"
+        while true; do
+        read -rp "Actual SQLite DB path is ${REV}$PLA_DB_PATH${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+        case ${yn} in
+            [Yy]* )
+                read -rp "Enter SQLite DB path: " newDbPath;
+                replaceFileRow src/.env "$PLA_DB_PATH" "$PLA_DB_PATH='${newDbPath,,}'";
+                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml sqlLiteDbPath ${newDbPath,,}
+                break;;
+            [Nn]* )
+                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml redisUser $PLA_DB_PATH
+                break;;
+            * )
+                replaceAllInFile .docker/deploy/docker-compose-phpliteadmin.yml redisUser $PLA_DB_PATH
+                break;;
+        esac
+    done
+        phpliteadminUrl="phpLiteAdmin URL: http://$PROJECT_URL:$phpLiteAdminHostPort/phpliteadmin.php"
+    else
+        printf '%s\n' "${RED}phpLiteAdmin was not selected and will not be installed.${RST}"
+        removePhpLiteAdmin #remove phpLiteAdmin
+    fi
+else
+    removePhpLiteAdmin #remove phpLiteAdmin
+fi

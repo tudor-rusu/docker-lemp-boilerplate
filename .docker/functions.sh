@@ -90,6 +90,7 @@ function removeTools() {
     removeRedis
     removePhpMyAdmin
     removePhpPgAdmin
+    removePhpLiteAdmin
 }
 
 function removeRedis() {
@@ -105,6 +106,10 @@ function removePhpMyAdmin() {
 function removePhpPgAdmin() {
     sed -i '/phpPgAdmin/d' src/.env
     sed -i '/PGA/d' src/.env
+}
+function removePhpLiteAdmin() {
+    sed -i '/phpLiteAdmin/d' src/.env
+    sed -i '/PLA/d' src/.env
 }
 
 function checkLocalOs() {

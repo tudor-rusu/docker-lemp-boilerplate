@@ -18,13 +18,21 @@ $dbpass = 'dev';
 $dbhost = 'lemp-postgresql';
 
 // SQLite
-//$ver = SQLite3::version();
-//echo $ver['versionString'] . "<br />\n";
-//echo $ver['versionNumber'] . "<br />\n";
-//print_r($ver);
+$ver = SQLite3::version();
+echo $ver['versionString'] . "<br />\n";
+echo $ver['versionNumber'] . "<br />\n";
+print_r($ver);
+echo "<br />\n" .'SQLite3 test results' . "<br />\n";
+$db = new SQLite3('db/test');
+$sql = "SELECT * FROM testare WHERE price < 3.00";
+$result = $db->query($sql);
+while ($row = $result->fetchArray(SQLITE3_ASSOC)){
+    echo $row['name'] . ': $' . $row['price'] . '<br/>';
+}
+unset($db);
 
 // PostgreSQL test
-$db_connection = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass") or die("Unable to Connect to '$dbhost'");
+//$db_connection = pg_connect("host=$dbhost dbname=$dbname user=$dbuser password=$dbpass") or die("Unable to Connect to '$dbhost'");
 
 // MySQL test
 //$connect = mysqli_connect($dbhost, $dbuser, $dbpass) or die("Unable to Connect to '$dbhost'");
