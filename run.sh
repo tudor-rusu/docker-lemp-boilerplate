@@ -17,6 +17,8 @@ source .docker/build/php/php.sh
 source .docker/build/db/db.sh
 ####################### 5. build and deploy db tools
 source .docker/build/db/dbtools.sh
+####################### 6. build and deploy mail support
+source .docker/build/mail/mail.sh
 
 # Docker run
 COMPOSE_LIST=($(echo "${COMPOSE_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
@@ -88,6 +90,10 @@ fi
 if [[ ! -z "$phpliteadminUrl" ]]
 then
     listString+=( "$phpliteadminUrl" )
+fi
+if [[ ! -z "$mailSlurperUrl" ]]
+then
+    listString+=( "$mailSlurperUrl" )
 fi
 drawResult "${listString}"
 echo "${RST}"
