@@ -114,11 +114,17 @@ function removePhpLiteAdmin() {
 
 function removeAllMailSupport() {
     removeMailSlurper
+    removeMailCatcher
 }
 
 function removeMailSlurper() {
     sed -i '/mailSlurper/d' src/.env
     sed -i '/MAIL_SLURPER/d' src/.env
+}
+
+function removeMailCatcher() {
+    sed -i '/mailCatcher/d' src/.env
+    sed -i '/MAIL_CATCHER/d' src/.env
 }
 
 function checkLocalOs() {

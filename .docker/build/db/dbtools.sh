@@ -7,7 +7,6 @@ source .docker/functions.sh
 source src/.env # get configuration file
 
 dbToolsSupport=false
-#dbEngine="PostgreSQL"
 while true; do
     read -rp "Do you want to add DB Tools to the project? ${RED}[y/N]${RST}: " yn
     case ${yn} in
