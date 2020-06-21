@@ -1,3 +1,19 @@
+## [0.3.0] - 2020-06-21
+
+### Added
+- mail.sh script
+- docker-compose-mailcatcher.yml
+- docker-compose-mailhog.yml  
+- docker-compose-mailslurper.yml
+
+### Modified
+- CHANGELOG.md
+- run.sh script
+- index.php
+- functions script
+- dbtools script
+- .env.dist
+
 ## [0.2.0] - 2020-06-20
 
 ### Added
