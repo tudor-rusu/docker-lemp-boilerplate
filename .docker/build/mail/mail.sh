@@ -63,7 +63,7 @@ else
         replaceAllInFile .docker/deploy/docker-compose-mailslurper.yml project $PROJECT_NAME
         # remove other mail engines
         removeMailCatcher #remove MailCatcher
-#        removeMailHog #remove MailHog
+        removeMailHog #remove MailHog
         mailSlurperSmtpHostPort=2500
         for port in $MAIL_SLURPER_SMTP_PORT
         do
@@ -105,18 +105,40 @@ else
         replaceAllInFile .docker/deploy/docker-compose-mailcatcher.yml project $PROJECT_NAME
         # remove other mail engines
         removeMailSlurper #remove MailSlurper
-#        removeMailHog #remove MailHog
-        mailCatcherSmtpHostPort=1080
-        for port in $MAIL_CATCHER_SMTP_PORT
+        removeMailHog #remove MailHog
+        mailCatcherWwwHostPort=1080
+        for port in $MAIL_CATCHER_WWW_PORT
         do
           if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
           then
-            mailCatcherSmtpHostPort=${port}
+            mailCatcherWwwHostPort=${port}
             break
           fi
         done
-        replaceAllInFile .docker/deploy/docker-compose-mailcatcher.yml "hostcatchersmtp" "$mailCatcherSmtpHostPort:1080"
-        mailCatcherUrl="MailCatcher URL: http://$PROJECT_URL:$mailCatcherSmtpHostPort"
+        replaceAllInFile .docker/deploy/docker-compose-mailcatcher.yml "hostcatchersmtp" "$mailCatcherWwwHostPort:1080"
+        mailCatcherUrl="MailCatcher URL: http://$PROJECT_URL:$mailCatcherWwwHostPort"
         printf '\n%s\n' "${GRN}MailCatcher build and deploy have been made successfully.${RST}"
+    fi
+
+    # MailHog
+    if [[ ${mailEngine} == "MailHog" ]]
+    then
+        COMPOSE_LIST+=(".docker/deploy/docker-compose-mailhog.yml")
+        replaceAllInFile .docker/deploy/docker-compose-mailhog.yml project $PROJECT_NAME
+        # remove other mail engines
+        removeMailSlurper #remove MailSlurper
+        removeMailCatcher #remove MailCatcher
+        mailHogWwwHostPort=8025
+        for port in $MAIL_HOG_WWW_PORT
+        do
+          if [[ $(nc -z 127.0.0.1 ${port} && echo "USE" || echo "FREE") == 'FREE' ]]
+          then
+            mailHogWwwHostPort=${port}
+            break
+          fi
+        done
+        replaceAllInFile .docker/deploy/docker-compose-mailhog.yml "hosthogwww" "$mailHogWwwHostPort:8025"
+        mailHogUrl="MailHog URL: http://$PROJECT_URL:$mailHogWwwHostPort"
+        printf '\n%s\n' "${GRN}MailHog build and deploy have been made successfully.${RST}"
     fi
 fi

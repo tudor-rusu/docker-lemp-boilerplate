@@ -99,5 +99,9 @@ if [[ ! -z "$mailCatcherUrl" ]]
 then
     listString+=( "$mailCatcherUrl" )
 fi
+if [[ ! -z "$mailHogUrl" ]]
+then
+    listString+=( "$mailHogUrl" )
+fi
 drawResult "${listString}"
 echo "${RST}"
