@@ -112,6 +112,27 @@ function removePhpLiteAdmin() {
     sed -i '/PLA/d' src/.env
 }
 
+function removeAllMailSupport() {
+    removeMailSlurper
+    removeMailCatcher
+    removeMailHog
+}
+
+function removeMailSlurper() {
+    sed -i '/mailSlurper/d' src/.env
+    sed -i '/MAIL_SLURPER/d' src/.env
+}
+
+function removeMailCatcher() {
+    sed -i '/mailCatcher/d' src/.env
+    sed -i '/MAIL_CATCHER/d' src/.env
+}
+
+function removeMailHog() {
+    sed -i '/mailHog/d' src/.env
+    sed -i '/MAIL_HOG/d' src/.env
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"
