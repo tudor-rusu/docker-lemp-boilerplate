@@ -133,6 +133,10 @@ function removeMailHog() {
     sed -i '/MAIL_HOG/d' src/.env
 }
 
+function removePhp74() {
+    sed -i '/php74install/d' .docker/build/php/Dockerfile
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"

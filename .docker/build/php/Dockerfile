@@ -12,6 +12,7 @@ RUN apt-get update \
         libpng-dev \
         libjpeg62-turbo-dev \
         libfreetype6-dev \
+        php74install \
         locales \
         zip \
         jpegoptim optipng pngquant gifsicle \
@@ -24,27 +25,17 @@ RUN apt-get update \
 
 # Install extensions
 RUN docker-php-ext-install mbstring zip exif pcntl
-RUN docker-php-ext-configure gd \
-    --with-gd --with-freetype-dir=/usr/include/ \
-    --with-jpeg-dir=/usr/include/ \
-    --with-png-dir=/usr/include/
+gdConfiguration
 RUN docker-php-ext-install gd
-mysqlExtensionsInstall
-mysqlExtensionsEnable
-postgresExtensionsUpdate
-postgresExtensionsPrerequisites
-postgresExtensionsConfigure
-postgresExtensionsInstall
-sqliteExtensionsUpdate
-sqliteExtensionsPrerequisites
-sqliteExtensionsInstall
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+RUN docker-php-ext-enable mysqli
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Add user for application
-RUN groupadd -g app-gid www
-RUN useradd -u app-uid -ms /bin/bash -g www www
+RUN groupadd -g 1000 www
+RUN useradd -u 1000 -ms /bin/bash -g www www
 
 # Change current user to www
 USER www

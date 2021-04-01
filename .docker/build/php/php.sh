@@ -37,4 +37,16 @@ while true; do
     esac
 done
 
+# add modifications for PHP >=7.4
+# get minor version
+minorVersion=$(echo $phpVersion | cut -c3-3)
+if [[ ${minorVersion} -ge '4' ]]
+then
+  replaceAllInFile .docker/build/php/Dockerfile "php74install" "libonig-dev libzip-dev";
+  replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/";
+else
+  removePhp74 #remove PHP >=7.4 scripts
+  replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/";
+fi
+
 printf '\n%s\n' "${GRN}PHP build and deploy have been made successfully.${RST}"
