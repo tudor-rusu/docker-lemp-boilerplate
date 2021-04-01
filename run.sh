@@ -24,7 +24,7 @@ source .docker/build/mail/mail.sh
 COMPOSE_LIST=($(echo "${COMPOSE_LIST[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' '))
 docker-compose $(printf -- "-f %s " "${COMPOSE_LIST[@]}") config > .docker/deploy/docker-compose.yml
 
-docker-compose -f .docker/deploy/docker-compose.yml up -d
+docker-compose -f .docker/deploy/docker-compose.yml -p $PROJECT_NAME up -d
 
 # register SSL certificate if is set HTTPS Protocol
 if [[ ${httpProtocol} == 'https' ]]
