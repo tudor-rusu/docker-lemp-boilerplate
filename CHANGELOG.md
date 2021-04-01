@@ -1,3 +1,11 @@
+## [0.4.0] - 2021-04-01
+
+### Modified
+- CHANGELOG.md
+- functions script
+- php script
+- php Dockerfile
+
 ## [0.3.0] - 2020-06-21
 
 ### Added
