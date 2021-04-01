@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+    #PostgreSQL Service
+    project-postgresql:
+        image: postgres:postgresVersion
+        container_name: project-postgresql
+        restart: unless-stopped
+        ports:
+            - "host5432"
+        environment:
+            - POSTGRES_DB=postgresDatabase
+            - POSTGRES_USER=postgresUser
+            - POSTGRES_PASSWORD=postgresPassword
+            - POSTGRES_HOST_AUTH_METHOD=postgresHoastAuthMethod
+            - PGDATA=/var/lib/postgresql/data/pgdata
+        volumes:
+            - project-pgdata:/var/lib/postgresql/
+            - ./../../.docker/build/db/postgres/:/docker-entrypoint-initdb.d/
+        networks:
+            - project-network
+
+#Docker Networks
+networks:
+    project-network:
+        driver: bridge
+
+#Docker Volumes
+volumes:
+    project-pgdata:
+        driver: local

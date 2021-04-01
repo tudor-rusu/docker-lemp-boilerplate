@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+    #mailHog Service
+    project-mailhog:
+        image: mailhog/mailhog
+        container_name: project-mailhog
+        restart: unless-stopped
+        ports:
+            - "1025:1025"
+            - "hosthogwww"
+        networks:
+            - project-network
+
+#Docker Networks
+networks:
+    project-network:
+        driver: bridge
