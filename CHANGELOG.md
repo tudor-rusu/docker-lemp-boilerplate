@@ -1,3 +1,9 @@
+## [0.4.1] - 2021-04-01
+
+### Modified
+- CHANGELOG.md
+- run script
+
 ## [0.4.0] - 2021-04-01
 
 ### Modified
