@@ -117,13 +117,11 @@ else
               fi
               if [[ ${appLaravelSupport} = true ]]
               then
-                echo "Add MCrypt extension"
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
+                addMCryptExt #add MCrypt ext
+                removeBCMathExt #remove unused ext
               fi
-            elif [[ ${appVanillaVersion} == "6.x" ]]
+            elif [[ ${appVanillaVersion} == "6.x" ]] || [[ ${appVanillaVersion} == "7.x" ]]
             then
-              echo "6.x"
               echo "${RED}Server Requirements:${RST} PHP >= 7.2.5"
               if [[ ${majorVersion} -ge '7' ]]
               then
@@ -150,46 +148,8 @@ else
               fi
               if [[ ${appLaravelSupport} = true ]]
               then
-                echo "Add MCrypt extension"
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
-                echo "Add BCMath extension"
-                replaceAllInFile .docker/build/php/Dockerfile "bcmathInstall" "RUN docker-php-ext-install bcmath";
-              fi
-            elif [[ ${appVanillaVersion} == "7.x" ]]
-            then
-              echo "7.x"
-              echo "${RED}Server Requirements:${RST} PHP >= 7.2.5"
-              if [[ ${majorVersion} -ge '7' ]]
-              then
-                if [[ ${minorVersion} -gt '2' ]]
-                then
-                  echo "PHP $phpVersion cover requirements"
-                  appLaravelSupport=true
-                else
-                  if [[ ${minorVersion} -eq '2' ]]
-                  then
-                    if [[ ${releaseVersion} ]] && [[ ${releaseVersion} -ge '5' ]]
-                    then
-                      echo "PHP $phpVersion cover requirements"
-                      appLaravelSupport=true
-                    else
-                      echo "PHP $phpVersion do not cover requirements"
-                    fi
-                  else
-                    echo "PHP $phpVersion do not cover requirements"
-                  fi
-                fi
-              else
-                echo "PHP $phpVersion do not cover requirements"
-              fi
-              if [[ ${appLaravelSupport} = true ]]
-              then
-                echo "Add MCrypt extension"
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
-                echo "Add BCMath extension"
-                replaceAllInFile .docker/build/php/Dockerfile "bcmathInstall" "RUN docker-php-ext-install bcmath";
+                addMCryptExt #add MCrypt ext
+                addBCMathExt #add BCMath ext
               fi
             elif [[ ${appVanillaVersion} == "8.x" ]]
             then
@@ -209,11 +169,8 @@ else
               fi
               if [[ ${appLaravelSupport} = true ]]
               then
-                echo "Add MCrypt extension"
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
-                replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
-                echo "Add BCMath extension"
-                replaceAllInFile .docker/build/php/Dockerfile "bcmathInstall" "RUN docker-php-ext-install bcmath";
+                addMCryptExt #add MCrypt ext
+                addBCMathExt #add BCMath ext
               fi
             else
                echo "invalid version $appVanillaVersion"

@@ -147,6 +147,21 @@ function removeLaravel() {
     sed -i '/bcmathInstall/d' .docker/build/php/Dockerfile
 }
 
+function addMCryptExt() {
+    echo "Add MCrypt extension"
+    replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
+    replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
+}
+
+function addBCMathExt() {
+    echo "Add BCMath extension"
+    replaceAllInFile .docker/build/php/Dockerfile "bcmathInstall" "RUN docker-php-ext-install bcmath";
+}
+
+function removeBCMathExt() {
+    sed -i '/bcmathInstall/d' .docker/build/php/Dockerfile
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"
