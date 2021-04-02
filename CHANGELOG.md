@@ -1,3 +1,15 @@
+## [0.5.0] - 2021-04-02
+
+### Added
+- app.sh script
+
+### Modified
+- CHANGELOG.md
+- run script
+- app.conf and apps.conf
+- php/Dockerfile
+- functions.sh
+
 ## [0.4.1] - 2021-04-01
 
 ### Modified
