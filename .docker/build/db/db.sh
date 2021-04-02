@@ -78,7 +78,7 @@ else
                 [Yy]* )
                     read -rp "Enter MySQL version: " newMySQLVersion;
                     replaceFileRow src/.env "MYSQL_VERSION" "MYSQL_VERSION='$newMySQLVersion'";
-                    replaceAllInFile .docker/deploy/docker-compose-mysql.yml mysqlVersion newMySQLVersion
+                    replaceAllInFile .docker/deploy/docker-compose-mysql.yml mysqlVersion $newMySQLVersion
                     break;;
                 [Nn]* )
                     replaceAllInFile .docker/deploy/docker-compose-mysql.yml mysqlVersion $MYSQL_VERSION
@@ -138,7 +138,7 @@ else
                 [Yy]* )
                     read -rp "Enter PostgreSQL version: " newPostgresVersion;
                     replaceFileRow src/.env "POSTGRES_VERSION" "POSTGRES_VERSION='$newPostgresVersion'";
-                    replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresVersion newPostgresVersion
+                    replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresVersion $newPostgresVersion
                     break;;
                 [Nn]* )
                     replaceAllInFile .docker/deploy/docker-compose-postgresql.yml postgresVersion $POSTGRES_VERSION

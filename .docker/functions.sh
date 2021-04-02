@@ -188,12 +188,12 @@ function updateNginxLaravel() {
     then
       replaceAllInFile .docker/build/nginx/conf.d/app.conf "rootDefinition" "root   /var/www/public;"
       replaceAllInFile .docker/build/nginx/conf.d/app.conf "xFrameOption" 'add_header X-Frame-Options "SAMEORIGIN";'
-      replaceAllInFile .docker/build/nginx/conf.d/app.conf "xContent" 'add_header X-Content-Type-Options "nosniff"'
+      replaceAllInFile .docker/build/nginx/conf.d/app.conf "xContent" 'add_header X-Content-Type-Options "nosniff";'
       replaceAllInFile .docker/build/nginx/conf.d/app.conf "locationFavicon" "location = /favicon.ico { access_log off; log_not_found off; }"
       replaceAllInFile .docker/build/nginx/conf.d/app.conf "locationRobots" "location = /robots.txt  { access_log off; log_not_found off; }"
       replaceAllInFile .docker/build/nginx/conf.d/apps.conf "rootDefinition" "root   /var/www/public;"
       replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xFrameOption" 'add_header X-Frame-Options "SAMEORIGIN";'
-      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xContent" 'add_header X-Content-Type-Options "nosniff"'
+      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xContent" 'add_header X-Content-Type-Options "nosniff";'
       replaceAllInFile .docker/build/nginx/conf.d/apps.conf "locationFavicon" "location = /favicon.ico { access_log off; log_not_found off; }"
       replaceAllInFile .docker/build/nginx/conf.d/apps.conf "locationRobots" "location = /robots.txt  { access_log off; log_not_found off; }"
       case ${1} in
