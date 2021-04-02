@@ -137,6 +137,88 @@ function removePhp74() {
     sed -i '/php74install/d' .docker/build/php/Dockerfile
 }
 
+function removeAllApp() {
+    removeLaravel
+}
+
+function removeLaravel() {
+    sed -i '/mcryptSupport/d' .docker/build/php/Dockerfile
+    sed -i '/mcryptInstall/d' .docker/build/php/Dockerfile
+    sed -i '/bcmathInstall/d' .docker/build/php/Dockerfile
+
+    replaceAllInFile .docker/build/nginx/conf.d/app.conf "rootDefinition" "root   /var/www;";
+    sed -i '/xXSSOption/d' .docker/build/nginx/conf.d/app.conf
+    sed -i '/xContent/d' .docker/build/nginx/conf.d/app.conf
+    sed -i '/xFrameOption/d' .docker/build/nginx/conf.d/app.conf
+    replaceAllInFile .docker/build/nginx/conf.d/app.conf "indexDefinition" "index  index.php index.html index.htm;";
+    sed -i '/locationFavicon/d' .docker/build/nginx/conf.d/app.conf
+    sed -i '/locationRobots/d' .docker/build/nginx/conf.d/app.conf
+
+    replaceAllInFile .docker/build/nginx/conf.d/apps.conf "rootDefinition" "root   /var/www;";
+    sed -i '/xXSSOption/d' .docker/build/nginx/conf.d/apps.conf
+    sed -i '/xContent/d' .docker/build/nginx/conf.d/apps.conf
+    sed -i '/xFrameOption/d' .docker/build/nginx/conf.d/apps.conf
+    replaceAllInFile .docker/build/nginx/conf.d/apps.conf "indexDefinition" "index  index.php index.html index.htm;";
+    sed -i '/locationFavicon/d' .docker/build/nginx/conf.d/apps.conf
+    sed -i '/locationRobots/d' .docker/build/nginx/conf.d/apps.conf
+}
+
+function addMCryptExt() {
+    echo "Add MCrypt extension"
+    replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
+    replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
+}
+
+function addBCMathExt() {
+    echo "Add BCMath extension"
+    replaceAllInFile .docker/build/php/Dockerfile "bcmathInstall" "RUN docker-php-ext-install bcmath";
+}
+
+function removeBCMathExt() {
+    sed -i '/bcmathInstall/d' .docker/build/php/Dockerfile
+}
+
+function updateNginxLaravel() {
+    if [ "$1" ]
+    then
+      replaceAllInFile .docker/build/nginx/conf.d/app.conf "rootDefinition" "root   /var/www/public;"
+      replaceAllInFile .docker/build/nginx/conf.d/app.conf "xFrameOption" 'add_header X-Frame-Options "SAMEORIGIN";'
+      replaceAllInFile .docker/build/nginx/conf.d/app.conf "xContent" 'add_header X-Content-Type-Options "nosniff"'
+      replaceAllInFile .docker/build/nginx/conf.d/app.conf "locationFavicon" "location = /favicon.ico { access_log off; log_not_found off; }"
+      replaceAllInFile .docker/build/nginx/conf.d/app.conf "locationRobots" "location = /robots.txt  { access_log off; log_not_found off; }"
+      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "rootDefinition" "root   /var/www/public;"
+      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xFrameOption" 'add_header X-Frame-Options "SAMEORIGIN";'
+      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xContent" 'add_header X-Content-Type-Options "nosniff"'
+      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "locationFavicon" "location = /favicon.ico { access_log off; log_not_found off; }"
+      replaceAllInFile .docker/build/nginx/conf.d/apps.conf "locationRobots" "location = /robots.txt  { access_log off; log_not_found off; }"
+      case ${1} in
+        "5.0" | "6.x")
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf "xXSSOption" 'add_header X-XSS-Protection "1; mode=block";';
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf "indexDefinition" "index  index.php index.html index.htm;";
+          replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xXSSOption" 'add_header X-XSS-Protection "1; mode=block";';
+          replaceAllInFile .docker/build/nginx/conf.d/apps.conf "indexDefinition" "index  index.php index.html index.htm;";
+          ;;
+        "7.x")
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf "xXSSOption" 'add_header X-XSS-Protection "1; mode=block";';
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf "indexDefinition" "index  index.php;";
+          replaceAllInFile .docker/build/nginx/conf.d/apps.conf "xXSSOption" 'add_header X-XSS-Protection "1; mode=block";';
+          replaceAllInFile .docker/build/nginx/conf.d/apps.conf "indexDefinition" "index  index.php;";
+          ;;
+        "8.x")
+          sed -i '/xXSSOption/d' .docker/build/nginx/conf.d/app.conf
+          sed -i '/xXSSOption/d' .docker/build/nginx/conf.d/apps.conf
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf "indexDefinition" "index  index.php;";
+          replaceAllInFile .docker/build/nginx/conf.d/apps.conf "indexDefinition" "index  index.php;";
+          ;;
+        * )
+          echo "updateNginxLaravel - invalid option $1"
+          ;;
+      esac
+    fi
+
+    return 0
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"
