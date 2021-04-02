@@ -13,7 +13,6 @@ RUN apt-get update \
         libjpeg62-turbo-dev \
         libfreetype6-dev \
         mcryptSupport \
-        mcryptInstall \
         php74install \
         locales \
         zip \
@@ -31,7 +30,7 @@ gdConfiguration
 RUN docker-php-ext-install gd
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 RUN docker-php-ext-enable mysqli
-mcryptEnable
+mcryptInstall
 bcmathInstall
 
 # Install composer

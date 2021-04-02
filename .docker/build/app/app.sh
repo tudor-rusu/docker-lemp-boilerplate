@@ -172,7 +172,7 @@ else
             addMCryptExt #add MCrypt ext
             removeBCMathExt #remove unused ext
           else
-            addMCryptExt #add MCrypt ext
+            removeMCryptExt #remove MCrypt ext
             addBCMathExt #add BCMath ext
           fi
           updateNginxLaravel ${appVanillaVersion} #add support for Laravel in Nginx

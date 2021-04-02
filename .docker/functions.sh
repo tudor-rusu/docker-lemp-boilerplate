@@ -144,7 +144,6 @@ function removeAllApp() {
 function removeLaravel() {
     sed -i '/mcryptSupport/d' .docker/build/php/Dockerfile
     sed -i '/mcryptInstall/d' .docker/build/php/Dockerfile
-    sed -i '/mcryptEnable/d' .docker/build/php/Dockerfile
     sed -i '/bcmathInstall/d' .docker/build/php/Dockerfile
 
     replaceAllInFile .docker/build/nginx/conf.d/app.conf "rootDefinition" "root   /var/www;";
@@ -167,8 +166,12 @@ function removeLaravel() {
 function addMCryptExt() {
     echo "Add MCrypt extension"
     replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
-    replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "pecl install mcrypt-1.0.4";
-    replaceAllInFile .docker/build/php/Dockerfile "mcryptEnable" "RUN docker-php-ext-enable mcrypt";
+    replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
+}
+
+function removeMCryptExt() {
+    sed -i '/mcryptSupport/d' .docker/build/php/Dockerfile
+    sed -i '/mcryptInstall/d' .docker/build/php/Dockerfile
 }
 
 function addBCMathExt() {
