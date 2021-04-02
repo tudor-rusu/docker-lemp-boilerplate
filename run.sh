@@ -9,12 +9,12 @@ source .docker/functions.sh
 
 ####################### 1. set the config
 source .docker/config.sh
-####################### 2. build and deploy nginx
-source .docker/build/nginx/nginx.sh
-####################### 3. build and deploy php
-source .docker/build/php/php.sh
-####################### 4. build and deploy specific app support
+####################### 2. build and deploy specific app support
 source .docker/build/app/app.sh
+####################### 3. build and deploy nginx
+source .docker/build/nginx/nginx.sh
+####################### 4. build and deploy php
+source .docker/build/php/php.sh
 ####################### 5. build and deploy db
 source .docker/build/db/db.sh
 ####################### 6. build and deploy db tools

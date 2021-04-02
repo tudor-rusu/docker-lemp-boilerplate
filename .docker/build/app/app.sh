@@ -115,11 +115,6 @@ else
               else
                 echo "PHP $phpVersion do not cover requirements"
               fi
-              if [[ ${appLaravelSupport} = true ]]
-              then
-                addMCryptExt #add MCrypt ext
-                removeBCMathExt #remove unused ext
-              fi
             elif [[ ${appVanillaVersion} == "6.x" ]] || [[ ${appVanillaVersion} == "7.x" ]]
             then
               echo "${RED}Server Requirements:${RST} PHP >= 7.2.5"
@@ -146,11 +141,6 @@ else
               else
                 echo "PHP $phpVersion do not cover requirements"
               fi
-              if [[ ${appLaravelSupport} = true ]]
-              then
-                addMCryptExt #add MCrypt ext
-                addBCMathExt #add BCMath ext
-              fi
             elif [[ ${appVanillaVersion} == "8.x" ]]
             then
               echo "8.x"
@@ -167,11 +157,6 @@ else
               else
                 echo "PHP $phpVersion do not cover requirements"
               fi
-              if [[ ${appLaravelSupport} = true ]]
-              then
-                addMCryptExt #add MCrypt ext
-                addBCMathExt #add BCMath ext
-              fi
             else
                echo "invalid version $appVanillaVersion"
             fi
@@ -182,6 +167,15 @@ else
           removeLaravel #remove Laravel support
           printf '%s\n' "${RED}$appVanilla $appVanillaVersion requirements have not been made successfully. Redeploy the project and set a PHP version which it is minimum required.${RST}"
         else
+          if [[ ${appVanillaVersion} == "5.0" ]]
+          then
+            addMCryptExt #add MCrypt ext
+            removeBCMathExt #remove unused ext
+          else
+            addMCryptExt #add MCrypt ext
+            addBCMathExt #add BCMath ext
+          fi
+          updateNginxLaravel ${appVanillaVersion} #add support for Laravel in Nginx
           printf '%s\n' "${GRN}$appVanilla $appVanillaVersion requirements have been made successfully.${RST}"
         fi
     fi
