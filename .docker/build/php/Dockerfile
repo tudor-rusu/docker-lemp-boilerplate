@@ -31,6 +31,7 @@ RUN docker-php-ext-install gd
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 RUN docker-php-ext-enable mysqli
 mcryptInstall
+bcmathInstall
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

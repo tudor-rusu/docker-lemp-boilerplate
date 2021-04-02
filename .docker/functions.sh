@@ -144,6 +144,7 @@ function removeAllApp() {
 function removeLaravel() {
     sed -i '/mcryptSupport/d' .docker/build/php/Dockerfile
     sed -i '/mcryptInstall/d' .docker/build/php/Dockerfile
+    sed -i '/bcmathInstall/d' .docker/build/php/Dockerfile
 }
 
 function checkLocalOs() {
