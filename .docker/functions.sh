@@ -142,7 +142,8 @@ function removeAllApp() {
 }
 
 function removeLaravel() {
-    echo 'remove Laravel'
+    sed -i '/mcryptSupport/d' .docker/build/php/Dockerfile
+    sed -i '/mcryptInstall/d' .docker/build/php/Dockerfile
 }
 
 function checkLocalOs() {

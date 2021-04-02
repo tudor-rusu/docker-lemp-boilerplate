@@ -5,6 +5,7 @@ set -e
 # include global vars and functions repository
 source .docker/functions.sh
 source src/.env # get configuration file
+phpVersion=$PHP_VERSION
 
 appSupport=false
 appVanilla=''
@@ -87,13 +88,38 @@ else
         done
 
         appLaravelSupport=false
+        majorVersion=$(echo $phpVersion | cut -c1-1)
+        minorVersion=$(echo $phpVersion | cut -c3-3)
         if [[ ${#appVanillaVersion} -gt 0 ]]
         then
             echo "${GRN}You chose $appVanilla framework $appVanillaVersion version.${RST}"
             if [[ ${appVanillaVersion} == "5.0" ]]
             then
-              echo "5.0"
-              appLaravelSupport=true
+              echo "${RED}Server Requirements:${RST} PHP >= 5.4, PHP < 7"
+              if [[ ${majorVersion} -ge '5' ]] && [[ ${majorVersion} -lt '7' ]]
+              then
+                if [[ ${majorVersion} -eq '5' ]] && [[ ${minorVersion} -ge '4' ]]
+                then
+                  echo "PHP $phpVersion cover requirements"
+                  appLaravelSupport=true
+                else
+                  if [[ ${majorVersion} -gt '5' ]]
+                  then
+                    echo "PHP $phpVersion cover requirements"
+                    appLaravelSupport=true
+                  else
+                    echo "PHP $phpVersion do not cover requirements"
+                  fi
+                fi
+              else
+                echo "PHP $phpVersion do not cover requirements"
+              fi
+              if [[ ${appLaravelSupport} = true ]]
+              then
+                echo "Add MCrypt extension"
+                replaceAllInFile .docker/build/php/Dockerfile "mcryptSupport" "libmcrypt-dev";
+                replaceAllInFile .docker/build/php/Dockerfile "mcryptInstall" "RUN docker-php-ext-install mcrypt";
+              fi
             elif [[ ${appVanillaVersion} == "6.x" ]]
             then
               echo "6.x"
@@ -113,9 +139,10 @@ else
 
         if [[ ${appLaravelSupport} = false ]]
         then
-            removeLaravel #remove Laravel support
+          removeLaravel #remove Laravel support
+          printf '%s\n' "${RED}$appVanilla $appVanillaVersion requirements have not been made successfully.${RST}"
         else
-            printf '\n%s\n' "${GRN}$appVanilla $appVanillaVersion requirements have been made successfully.${RST}"
+          printf '%s\n' "${GRN}$appVanilla $appVanillaVersion requirements have been made successfully.${RST}"
         fi
     fi
 fi

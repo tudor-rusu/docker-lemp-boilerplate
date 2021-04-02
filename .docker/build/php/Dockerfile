@@ -12,6 +12,7 @@ RUN apt-get update \
         libpng-dev \
         libjpeg62-turbo-dev \
         libfreetype6-dev \
+        mcryptSupport \
         php74install \
         locales \
         zip \
@@ -29,6 +30,7 @@ gdConfiguration
 RUN docker-php-ext-install gd
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 RUN docker-php-ext-enable mysqli
+mcryptInstall
 
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
