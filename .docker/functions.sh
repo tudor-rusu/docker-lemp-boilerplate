@@ -137,6 +137,14 @@ function removePhp74() {
     sed -i '/php74install/d' .docker/build/php/Dockerfile
 }
 
+function removeAllApp() {
+    removeLaravel
+}
+
+function removeLaravel() {
+    echo 'remove Laravel'
+}
+
 function checkLocalOs() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         systemType="Linux"
