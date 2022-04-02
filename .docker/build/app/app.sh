@@ -57,7 +57,7 @@ else
         # chose the version
         appVanillaVersion=''
         PS3="Please enter $appVanilla framework version: "
-        options=("5.0" "6.x" "7.x" "8.x" "Quit")
+        options=("5.0" "6.x" "7.x" "8.x" "9.x" "Quit")
         select opt in "${options[@]}"
         do
             case ${opt} in
@@ -74,6 +74,10 @@ else
                     break
                     ;;
                 "8.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "9.x")
                     appVanillaVersion="$opt"
                     break
                     ;;
@@ -148,6 +152,22 @@ else
               if [[ ${majorVersion} -ge '7' ]]
               then
                 if [[ ${minorVersion} -ge '3' ]]
+                then
+                  echo "PHP $phpVersion cover requirements"
+                  appLaravelSupport=true
+                else
+                  echo "PHP $phpVersion do not cover requirements"
+                fi
+              else
+                echo "PHP $phpVersion do not cover requirements"
+              fi
+            elif [[ ${appVanillaVersion} == "9.x" ]]
+            then
+              echo "9.x"
+              echo "${RED}Server Requirements:${RST} PHP >= 8.0"
+              if [[ ${majorVersion} -ge '8' ]]
+              then
+                if [[ ${minorVersion} -ge '0' ]]
                 then
                   echo "PHP $phpVersion cover requirements"
                   appLaravelSupport=true
