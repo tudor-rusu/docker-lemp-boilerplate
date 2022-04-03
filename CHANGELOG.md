@@ -1,3 +1,23 @@
+## [0.6.0] - 2022-04-03
+
+- refactor(php): refactor php.sh related to better check of php version
+- build(app): add Laravel 9.x in app.sh
+- refactor(docker): refactor docker files for update to PHP 8 and MySQL 8
+- buil(php): build xdebug support
+
+### Modified
+- CHANGELOG.md
+- run script
+- functions.sh
+- php/Dockerfile
+- app.sh
+- php.sh
+- docker-compose-mysql.yml
+- src/index.php
+
+### Removed
+- mysql/my.cnf file
+
 ## [0.5.0] - 2021-04-02
 
 ### Added

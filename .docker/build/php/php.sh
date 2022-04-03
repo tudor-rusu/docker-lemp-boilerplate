@@ -6,6 +6,8 @@ set -e
 source .docker/functions.sh
 source src/.env # get configuration file
 phpVersion=$PHP_VERSION
+majorVersion=$(echo $phpVersion | cut -c1-1)
+minorVersion=$(echo $phpVersion | cut -c3-3)
 
 # build and deploy php
 echo "${BLU}Build the ${BLD}php${RST} ${BLU}container${RST}"
@@ -38,9 +40,7 @@ while true; do
 done
 
 # add modifications for PHP >=7.4
-# get minor version
-minorVersion=$(echo $phpVersion | cut -c3-3)
-if [[ ${minorVersion} -ge '4' ]]
+if [[ ${majorVersion}${minorVersion} -ge '74' ]]
 then
   replaceAllInFile .docker/build/php/Dockerfile "php74install" "libonig-dev libzip-dev";
   replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/";
