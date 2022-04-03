@@ -8,7 +8,6 @@ source src/.env # get configuration file
 phpVersion=$PHP_VERSION
 majorVersion=$(echo $phpVersion | cut -c1-1)
 minorVersion=$(echo $phpVersion | cut -c3-3)
-releaseVersion=$(echo $phpVersion | cut -c5-5)
 
 # build and deploy php
 echo "${BLU}Build the ${BLD}php${RST} ${BLU}container${RST}"
@@ -41,16 +40,10 @@ while true; do
 done
 
 # add modifications for PHP >=7.4
-if [[ ${majorVersion} -ge '7' ]]
+if [[ ${majorVersion}${minorVersion} -ge '74' ]]
 then
-  if [[ ${minorVersion} -ge '4' ]]
-  then
-    replaceAllInFile .docker/build/php/Dockerfile "php74install" "libonig-dev libzip-dev";
-    replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/";
-  else
-    removePhp74 #remove PHP >=7.4 scripts
-    replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/";
-  fi
+  replaceAllInFile .docker/build/php/Dockerfile "php74install" "libonig-dev libzip-dev";
+  replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/";
 else
   removePhp74 #remove PHP >=7.4 scripts
   replaceAllInFile .docker/build/php/Dockerfile "gdConfiguration" "RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ --with-png-dir=/usr/include/";
