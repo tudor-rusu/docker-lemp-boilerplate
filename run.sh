@@ -67,19 +67,6 @@ then
   printf '%s\n' "${GRN}Self-signed SSL Certificate have been register successfully in your system.${RST}"
 fi
 
-# Database user
-#if [[ -n "$dbEngine" && ${dbEngine} == "MySQL" ]]
-#then
-#    echo -en "\n"
-#    echo "${RED}Create the user account that will be allowed to access this database and flush the privileges to notify the MySQL server of the changes${RESET}"
-#    if [[ ${localOs} == "Windows" ]]
-#    then
-#      winpty docker container exec -it $PROJECT_NAME-mysql mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
-#    else
-#      docker container exec -it $PROJECT_NAME-mysql mysql -u$MYSQL_ROOT_USER -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';FLUSH PRIVILEGES;"
-#    fi
-#fi
-
 # Show the final result
 listString=("$projectUrl")
 if [[ ! -z "$redisUrl" ]]

@@ -27,6 +27,11 @@ cp ${PROJECT_ROOT}/src/.env.dist ${PROJECT_ROOT}/src/.env
 ```shell script
 ./run.sh
 ```
+* After successfully deployed Docker environment, it is better to add a new user to the Database
+```shell script
+docker container exec -it ${PROJECT_NAME}-mysql mysql -u${MYSQL_ROOT_USER} -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL ON 
+${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';FLUSH PRIVILEGES;"
+```
 
 * Enjoy!
 
