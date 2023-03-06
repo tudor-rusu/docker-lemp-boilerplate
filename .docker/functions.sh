@@ -221,6 +221,12 @@ function updateNginxLaravel() {
           replaceAllInFile .docker/build/nginx/conf.d/app.conf "indexDefinition" "index  index.php;";
           replaceAllInFile .docker/build/nginx/conf.d/apps.conf "indexDefinition" "index  index.php;";
           ;;
+        "10.x")
+          sed -i '/xXSSOption/d' .docker/build/nginx/conf.d/app.conf
+          sed -i '/xXSSOption/d' .docker/build/nginx/conf.d/apps.conf
+          replaceAllInFile .docker/build/nginx/conf.d/app.conf "indexDefinition" "index  index.php;";
+          replaceAllInFile .docker/build/nginx/conf.d/apps.conf "indexDefinition" "index  index.php;";
+          ;;
         * )
           echo "updateNginxLaravel - invalid option $1"
           ;;
