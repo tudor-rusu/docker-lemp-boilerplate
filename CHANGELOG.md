@@ -1,3 +1,11 @@
+## [0.6.1] - 2023-03-06
+
+- build(app): add Laravel 9.x in app.sh
+
+### Modified
+- CHANGELOG.md
+- app.sh
+
 ## [0.6.0] - 2022-04-03
 
 - refactor(php): refactor php.sh related to better check of php version
