@@ -57,7 +57,7 @@ else
         # chose the version
         appVanillaVersion=''
         PS3="Please enter $appVanilla framework version: "
-        options=("5.0" "6.x" "7.x" "8.x" "9.x" "Quit")
+        options=("5.0" "6.x" "7.x" "8.x" "9.x" "10.x" "Quit")
         select opt in "${options[@]}"
         do
             case ${opt} in
