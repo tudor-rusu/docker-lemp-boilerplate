@@ -81,6 +81,10 @@ else
                     appVanillaVersion="$opt"
                     break
                     ;;
+                "10.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
                 "Quit")
                     break
                     ;;
@@ -168,6 +172,22 @@ else
               if [[ ${majorVersion} -ge '8' ]]
               then
                 if [[ ${minorVersion} -ge '0' ]]
+                then
+                  echo "PHP $phpVersion cover requirements"
+                  appLaravelSupport=true
+                else
+                  echo "PHP $phpVersion do not cover requirements"
+                fi
+              else
+                echo "PHP $phpVersion do not cover requirements"
+              fi
+            elif [[ ${appVanillaVersion} == "10.x" ]]
+            then
+              echo "10.x"
+              echo "${RED}Server Requirements:${RST} PHP >= 8.1"
+              if [[ ${majorVersion} -ge '8' ]]
+              then
+                if [[ ${minorVersion} -ge '1' ]]
                 then
                   echo "PHP $phpVersion cover requirements"
                   appLaravelSupport=true
