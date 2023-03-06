@@ -19,7 +19,7 @@
 - mysql/my.cnf file
 
 ## [0.5.0] - 2021-04-02
-
+0
 ### Added
 - app.sh script
 
