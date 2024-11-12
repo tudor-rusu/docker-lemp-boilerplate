@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+max_target_name_length=34
+
+echo "${BLUE}Usage:${RESET}"
+echo '  make <target> [environment variables]'
+echo ''
+echo "${BLUE}Targets:${RESET}"
+
+last_line=''
+while IFS= read -r line; do
+    if [[ $last_line =~ ^#{120}$ && $line =~ ^#[[:space:]] ]]; then
+        section=${line:2}
+        if [[ $section == "Functions" ]]; then
+          echo "${RED}"
+        else
+          echo "${BLUE}"
+        fi
+        echo "${section}${RESET}"
+    elif [[ $last_line =~ ^##[[:space:]] ]]; then
+        target=$(echo "$line" | cut -d':' -f1)
+        description=${last_line:3}
+
+        printf "  ${GREEN}%-${max_target_name_length}s${RESET} %s\n" "$target" "$description"
+    fi
+
+    last_line=$line
+done < 'Makefile'

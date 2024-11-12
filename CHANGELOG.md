@@ -1,3 +1,14 @@
+## [0.7.0] - 2024-11-12
+
+- start building transition between SH files to Makefiles
+
+### Modified
+- CHANGELOG.md
+
+### Added
+- Makefile
+- .docker/makefiles
+
 ## [0.6.1] - 2023-03-06
 
 - build(app): add Laravel 9.x in app.sh
