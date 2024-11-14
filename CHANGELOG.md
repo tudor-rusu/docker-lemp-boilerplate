@@ -1,3 +1,18 @@
+## [0.7.1] - 2024-11-14
+
+- add general functions to Makefile
+
+### Modified
+- CHANGELOG.md
+- Makefile
+
+### Added
+- variables.mk
+- .docker/makefiles/functions/replace-file-row
+- .docker/makefiles/functions/replace-all-in-file
+- .docker/makefiles/functions/draw-result
+- .docker/makefiles/functions/check-local-os
+
 ## [0.7.0] - 2024-11-12
 
 - start building transition between SH files to Makefiles

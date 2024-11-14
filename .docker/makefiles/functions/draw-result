@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -e
+
+# return value of the longest string into an array of strings [$LIST_STRING - array with all strings]
+function longestStringInList() {
+    listString=("${@}")
+    longestValue=-1
+    for string in "${listString[@]}"
+    do
+      if [ ${#string} -gt "$longestValue" ]
+      then
+          longestValue=${#string}
+      fi
+    done
+    echo "$longestValue"
+}
+
+declare -a arrString="${LIST_STRING}"
+
+maxString=$(longestStringInList "${arrString[@]}")
+sPre=6
+interiorWidth=$(( maxString + sPre * 2 ))
+longLine=$(printf "\u2550%0.s" $(seq $interiorWidth))
+
+printf "%s\u2554%s\u2557\n%s" ${COLOR} ${longLine} ${RESET}
+printf "%s\u2551%s%${interiorWidth}s%s\u2551\n%s" ${COLOR} ${RESET} '' ${COLOR} ${RESET}
+
+for string in "${arrString[@]}"
+do
+  sApp=$(( $interiorWidth - $sPre - ${#string} ))
+  printf "%s\u2551%s%${sPre}s%s%${sApp}s%s\u2551\n%s" ${COLOR} ${RESET} '' "$string" '' ${COLOR} ${RESET}
+done
+
+printf "%s\u2551%s%${interiorWidth}s%s\u2551\n%s" ${COLOR} ${RESET} '' ${COLOR} ${RESET}
+printf "%s\u255A%s\u255D\n%s" ${COLOR} ${longLine} ${RESET}

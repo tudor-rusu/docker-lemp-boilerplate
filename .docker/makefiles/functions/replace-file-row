@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+
+while IFS=$'\n' read -r p || [ -n "$p" ]
+do
+  if [[ $p == *${SEARCH}* ]]; then
+    sed -i "s#$p#${REPLACE}#g" "${FILE}"
+  fi
+done < "${FILE}"

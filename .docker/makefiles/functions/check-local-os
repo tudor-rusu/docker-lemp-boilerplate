@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+# return OS type
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    systemType="Linux"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    systemType="Mac OSX"
+elif [[ "$OSTYPE" == "cygwin" ]]; then
+    systemType="Cygwin"
+elif [[ "$OSTYPE" == "msys" ]]; then
+    systemType="Windows"
+elif [[ "$OSTYPE" == "win32" ]]; then
+    systemType="Windows"
+elif [[ "$OSTYPE" == "freebsd"* ]]; then
+    systemType="Freebsd"
+else
+    systemType="Unknown"
+fi
+
+echo ${systemType}
