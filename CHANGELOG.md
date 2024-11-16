@@ -1,13 +1,16 @@
 ## [0.7.4] - 2024-11-16
 
-- update functions for Makefile
+- add app and build targets to Makefile
 
 ### Modified
 - CHANGELOG.md
-- .docker/makefiles/functions/add-script
-- .docker/makefiles/functions/remove-script
-- .docker/makefiles/functions/update-nginx-laravel
-- .docker/makefiles/variables.sh
+- Makefile
+
+### Added
+- .docker/makefiles/build/app
+
+### Deleted
+- .docker/build/app/app.sh
 
 ## [0.7.3] - 2024-11-16
 

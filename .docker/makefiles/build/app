@@ -1,0 +1,238 @@
+#!/usr/bin/env bash
+# Apps script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+appSupport=false
+appVanilla=''
+while true; do
+    read -rp "Do you want to add a specific framework to the project? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+          appSupport=true
+          break;;
+        [Nn]* ) break;;
+        * ) break;;
+    esac
+done
+
+if [[ ${appSupport} = false ]]
+then
+    make --no-print-directory remove-script SCRIPT_TYPE="AllApp" #remove all apps support
+else
+    echo "${BLU}Build the ${BLD}framework${RST} ${BLU}container${RST}"
+    # chose the framework
+    PS3="Please enter your choice: "
+    options=("Laravel" "Quit")
+    select opt in "${options[@]}"
+    do
+        case ${opt} in
+            "Laravel")
+                appVanilla="$opt"
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            * )
+                echo "invalid option $REPLY"
+                break
+                ;;
+        esac
+    done
+
+    if [[ ${#appVanilla} -gt 0 ]]
+    then
+        #TODO remove other apps support
+        echo "${GRN}You chose $appVanilla framework.${RST}"
+    fi
+
+    # Laravel
+    if [[ ${appVanilla} == "Laravel" ]]
+    then
+        # chose the version
+        appVanillaVersion=''
+        PS3="Please enter $appVanilla framework version: "
+        options=("5.0" "6.x" "7.x" "8.x" "9.x" "10.x" "11.x" "Quit")
+        select opt in "${options[@]}"
+        do
+            case ${opt} in
+                "5.0")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "6.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "7.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "8.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "9.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "10.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "11.x")
+                    appVanillaVersion="$opt"
+                    break
+                    ;;
+                "Quit")
+                    break
+                    ;;
+                * )
+                    echo "invalid option $REPLY"
+                    break
+                    ;;
+            esac
+        done
+
+        appLaravelSupport=false
+        majorVersion=$(echo $PHP_VERSION | cut -c1-1)
+        minorVersion=$(echo $PHP_VERSION | cut -c3-3)
+        releaseVersion=$(echo $PHP_VERSION | cut -c5-5)
+        if [[ ${#appVanillaVersion} -gt 0 ]]
+        then
+            echo "${GRN}You chose $appVanilla framework $appVanillaVersion version.${RST}"
+            case "${appVanillaVersion}" in
+              "5.0")
+                echo "${RED}Server Requirements:${RST} PHP >= 5.4, PHP < 7"
+                if [[ ${majorVersion} -ge '5' ]] && [[ ${majorVersion} -lt '7' ]]
+                then
+                  if [[ ${majorVersion} -eq '5' ]] && [[ ${minorVersion} -ge '4' ]]
+                  then
+                    echo "PHP $PHP_VERSION cover requirements"
+                    appLaravelSupport=true
+                  else
+                    if [[ ${majorVersion} -gt '5' ]]
+                    then
+                      echo "PHP $PHP_VERSION cover requirements"
+                      appLaravelSupport=true
+                    else
+                      echo "PHP $PHP_VERSION do not cover requirements"
+                    fi
+                  fi
+                else
+                  echo "PHP $PHP_VERSION do not cover requirements"
+                fi
+                ;;
+              "6.x" | "7.x")
+                echo "${RED}Server Requirements:${RST} PHP >= 7.2.5"
+                if [[ ${majorVersion} -ge '7' ]]
+                then
+                  if [[ ${minorVersion} -gt '2' ]]
+                  then
+                    echo "PHP $PHP_VERSION cover requirements"
+                    appLaravelSupport=true
+                  else
+                    if [[ ${minorVersion} -eq '2' ]]
+                    then
+                      if [[ ${releaseVersion} ]] && [[ ${releaseVersion} -ge '5' ]]
+                      then
+                        echo "PHP $PHP_VERSION cover requirements"
+                        appLaravelSupport=true
+                      else
+                        echo "PHP $PHP_VERSION do not cover requirements"
+                      fi
+                    else
+                      echo "PHP $PHP_VERSION do not cover requirements"
+                    fi
+                  fi
+                else
+                  echo "PHP $PHP_VERSION do not cover requirements"
+                fi
+                ;;
+              "8.x" )
+                echo "${RED}Server Requirements:${RST} PHP >= 7.3"
+                if [[ ${majorVersion} -ge '7' ]]
+                then
+                  if [[ ${minorVersion} -ge '3' ]]
+                  then
+                    echo "PHP $PHP_VERSION cover requirements"
+                    appLaravelSupport=true
+                  else
+                    echo "PHP $PHP_VERSION do not cover requirements"
+                  fi
+                else
+                  echo "PHP $PHP_VERSION do not cover requirements"
+                fi
+                ;;
+              "9.x" )
+                echo "${RED}Server Requirements:${RST} PHP >= 8.0"
+                if [[ ${majorVersion} -ge '8' ]]
+                then
+                  if [[ ${minorVersion} -ge '0' ]]
+                  then
+                    echo "PHP $PHP_VERSION cover requirements"
+                    appLaravelSupport=true
+                  else
+                    echo "PHP $PHP_VERSION do not cover requirements"
+                  fi
+                else
+                  echo "PHP $PHP_VERSION do not cover requirements"
+                fi
+                ;;
+              "10.x" )
+                echo "${RED}Server Requirements:${RST} PHP >= 8.1"
+                if [[ ${majorVersion} -ge '8' ]]
+                then
+                  if [[ ${minorVersion} -ge '1' ]]
+                  then
+                    echo "PHP $PHP_VERSION cover requirements"
+                    appLaravelSupport=true
+                  else
+                    echo "PHP $PHP_VERSION do not cover requirements"
+                  fi
+                else
+                  echo "PHP $PHP_VERSION do not cover requirements"
+                fi
+                ;;
+              "11.x" )
+                echo "${RED}Server Requirements:${RST} PHP >= 8.2"
+                if [[ ${majorVersion} -ge '8' ]]
+                then
+                  if [[ ${minorVersion} -ge '2' ]]
+                  then
+                    echo "PHP $PHP_VERSION cover requirements"
+                    appLaravelSupport=true
+                  else
+                    echo "PHP $PHP_VERSION do not cover requirements"
+                  fi
+                else
+                  echo "PHP $PHP_VERSION do not cover requirements"
+                fi
+                ;;
+              * )
+                echo "Invalid version ${RED}${appVanillaVersion}${RST}"
+                ;;
+            esac
+        fi
+
+        if [[ ${appLaravelSupport} = false ]]
+        then
+          make --no-print-directory remove-script SCRIPT_TYPE="Laravel" #remove Laravel support
+          printf '%s\n' "${RED}$appVanilla $appVanillaVersion requirements have not been made successfully. Redeploy the project and set a PHP version which it is minimum required.${RST}"
+        else
+          if [[ ${appVanillaVersion} == "5.0" ]]
+          then
+            make --no-print-directory add-script SCRIPT_TYPE="MCryptExt" #add MCrypt ext
+            make --no-print-directory remove-script SCRIPT_TYPE="BCMathExt" #remove unused ext
+          else
+            make --no-print-directory remove-script SCRIPT_TYPE="MCryptExt" #remove MCrypt ext
+            make --no-print-directory add-script SCRIPT_TYPE="BCMathExt" #add BCMath ext
+          fi
+          make --no-print-directory update-nginx-laravel VERSION="${appVanillaVersion}" #add support for Laravel in Nginx
+          printf '%s\n' "${GRN}$appVanilla $appVanillaVersion requirements have been made successfully.${RST}"
+        fi
+    fi
+fi
