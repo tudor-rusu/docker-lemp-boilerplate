@@ -1,3 +1,19 @@
+## [0.7.3] - 2024-11-16
+
+- add config target to Makefile
+
+### Modified
+- CHANGELOG.md
+- Makefile
+- .docker/makefiles/variables.mk
+
+### Added
+- .docker/makefiles/variables.sh
+- .docker/makefiles/build/config
+
+### Deleted
+- .docker/config.sh
+ 
 ## [0.7.2] - 2024-11-16
 
 - first version of all updated functions
