@@ -3,7 +3,7 @@
 set -e
 
 # get local OS
-LOCAL_OS=$(make check-local-os); export LOCAL_OS
+LOCAL_OS=$(make --no-print-directory check-local-os); export LOCAL_OS
 
 # Colors vars
 RED=$(tput setaf 1); export RED

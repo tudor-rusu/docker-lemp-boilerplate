@@ -1,3 +1,14 @@
+## [0.7.4] - 2024-11-16
+
+- update functions for Makefile
+
+### Modified
+- CHANGELOG.md
+- .docker/makefiles/functions/add-script
+- .docker/makefiles/functions/remove-script
+- .docker/makefiles/functions/update-nginx-laravel
+- .docker/makefiles/variables.sh
+
 ## [0.7.3] - 2024-11-16
 
 - add config target to Makefile

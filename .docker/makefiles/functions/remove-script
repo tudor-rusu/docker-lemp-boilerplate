@@ -7,107 +7,107 @@ set -e
 case "${SCRIPT_TYPE}" in
   "MCryptExt")
     echo "Remove ${GREEN}MCrypt extension${RESET}"
-    make delete-pattern-line-in-file PATTERN="mcryptSupport" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="mcryptInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mcryptSupport" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mcryptInstall" FILE=.docker/build/php/Dockerfile
     ;;
   "BCMathExt")
     echo "Remove ${GREEN}BCMath extension${RESET}"
-    make delete-pattern-line-in-file PATTERN="bcmathInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="bcmathInstall" FILE=.docker/build/php/Dockerfile
     ;;
   "Mysql")
     echo "Remove ${GREEN}Mysql support${RESET}"
-    make delete-pattern-line-in-file PATTERN="mysqlExtensionsInstall" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="mysqlExtensionsEnable" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="MySQL" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="MYSQL" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mysqlExtensionsInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mysqlExtensionsEnable" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="MySQL" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="MYSQL" FILE=src/.env
     ;;
   "Postgres")
     echo "Remove ${GREEN}Postgres support${RESET}"
-    make delete-pattern-line-in-file PATTERN="postgresExtensionsUpdate" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="postgresExtensionsPrerequisites" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="postgresExtensionsConfigure" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="postgresExtensionsInstall" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="PostgreSQL" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="POSTGRES" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="postgresExtensionsUpdate" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="postgresExtensionsPrerequisites" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="postgresExtensionsConfigure" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="postgresExtensionsInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="PostgreSQL" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="POSTGRES" FILE=src/.env
     ;;
   "Sqlite")
     echo "Remove ${GREEN}Sqlite support${RESET}"
-    make delete-pattern-line-in-file PATTERN="sqliteExtensionsUpdate" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="sqliteExtensionsPrerequisites" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="sqliteExtensionsInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="sqliteExtensionsUpdate" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="sqliteExtensionsPrerequisites" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="sqliteExtensionsInstall" FILE=.docker/build/php/Dockerfile
     ;;
   "Redis")
     echo "Remove ${GREEN}Redis support${RESET}"
-    make delete-pattern-line-in-file PATTERN="Redis" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="REDIS" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="Redis" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="REDIS" FILE=src/.env
     ;;
   "PhpMyAdmin")
     echo "Remove ${GREEN}PhpMyAdmin support${RESET}"
-    make delete-pattern-line-in-file PATTERN="phpMyAdmin" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="PMA" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="phpMyAdmin" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="PMA" FILE=src/.env
     ;;
   "PhpPgAdmin")
     echo "Remove ${GREEN}PhpPgAdmin support${RESET}"
-    make delete-pattern-line-in-file PATTERN="phpPgAdmin" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="PGA" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="phpPgAdmin" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="PGA" FILE=src/.env
     ;;
   "PhpLiteAdmin")
     echo "Remove ${GREEN}PhpLiteAdmin support${RESET}"
-    make delete-pattern-line-in-file PATTERN="phpLiteAdmin" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="PLA" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="phpLiteAdmin" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="PLA" FILE=src/.env
     ;;
   "Tools")
-    make remove-script SCRIPT_TYPE="Redis"
-    make remove-script SCRIPT_TYPE="PhpMyAdmin"
-    make remove-script SCRIPT_TYPE="PhpPgAdmin"
-    make remove-script SCRIPT_TYPE="PhpLiteAdmin"
+    make --no-print-directory remove-script SCRIPT_TYPE="Redis"
+    make --no-print-directory remove-script SCRIPT_TYPE="PhpMyAdmin"
+    make --no-print-directory remove-script SCRIPT_TYPE="PhpPgAdmin"
+    make --no-print-directory remove-script SCRIPT_TYPE="PhpLiteAdmin"
     ;;
   "MailSlurper")
     echo "Remove ${GREEN}MailSlurper support${RESET}"
-    make delete-pattern-line-in-file PATTERN="mailSlurper" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="MAIL_SLURPER" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mailSlurper" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="MAIL_SLURPER" FILE=src/.env
     ;;
   "MailCatcher")
     echo "Remove ${GREEN}MailCatcher support${RESET}"
-    make delete-pattern-line-in-file PATTERN="mailCatcher" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="MAIL_CATCHER" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mailCatcher" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="MAIL_CATCHER" FILE=src/.env
     ;;
   "MailHog")
     echo "Remove ${GREEN}MailHog support${RESET}"
-    make delete-pattern-line-in-file PATTERN="mailHog" FILE=src/.env
-    make delete-pattern-line-in-file PATTERN="MAIL_HOG" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mailHog" FILE=src/.env
+    make --no-print-directory delete-pattern-line-in-file PATTERN="MAIL_HOG" FILE=src/.env
     ;;
   "AllMailSupport")
-    make remove-script SCRIPT_TYPE="MailSlurper"
-    make remove-script SCRIPT_TYPE="MailCatcher"
-    make remove-script SCRIPT_TYPE="MailHog"
+    make --no-print-directory remove-script SCRIPT_TYPE="MailSlurper"
+    make --no-print-directory remove-script SCRIPT_TYPE="MailCatcher"
+    make --no-print-directory remove-script SCRIPT_TYPE="MailHog"
     ;;
   "Php74")
     echo "Remove ${GREEN}Php 7.4 install${RESET}"
-    make delete-pattern-line-in-file PATTERN="php74install" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="php74install" FILE=.docker/build/php/Dockerfile
     ;;
   "Laravel")
     echo "Remove ${GREEN}Laravel support${RESET}"
-    make delete-pattern-line-in-file PATTERN="mcryptSupport" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="mcryptInstall" FILE=.docker/build/php/Dockerfile
-    make delete-pattern-line-in-file PATTERN="bcmathInstall" FILE=.docker/build/php/Dockerfile
-    make replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="rootDefinition" REPLACE="root   /var/www;"
-    make delete-pattern-line-in-file PATTERN="xXSSOption" FILE=.docker/build/nginx/conf.d/app.conf
-    make delete-pattern-line-in-file PATTERN="xContent" FILE=.docker/build/nginx/conf.d/app.conf
-    make delete-pattern-line-in-file PATTERN="xFrameOption" FILE=.docker/build/nginx/conf.d/app.conf
-    make replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
-    make delete-pattern-line-in-file PATTERN="locationFavicon" FILE=.docker/build/nginx/conf.d/app.conf
-    make delete-pattern-line-in-file PATTERN="locationRobots" FILE=.docker/build/nginx/conf.d/app.conf
-    make replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="rootDefinition" REPLACE="root   /var/www;"
-    make delete-pattern-line-in-file PATTERN="xXSSOption" FILE=.docker/build/nginx/conf.d/apps.conf
-    make delete-pattern-line-in-file PATTERN="xContent" FILE=.docker/build/nginx/conf.d/apps.conf
-    make delete-pattern-line-in-file PATTERN="xFrameOption" FILE=.docker/build/nginx/conf.d/apps.conf
-    make replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
-    make delete-pattern-line-in-file PATTERN="locationFavicon" FILE=.docker/build/nginx/conf.d/apps.conf
-    make delete-pattern-line-in-file PATTERN="locationRobots" FILE=.docker/build/nginx/conf.d/apps.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mcryptSupport" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="mcryptInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory delete-pattern-line-in-file PATTERN="bcmathInstall" FILE=.docker/build/php/Dockerfile
+    make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="rootDefinition" REPLACE="root   /var/www;"
+    make --no-print-directory delete-pattern-line-in-file PATTERN="xXSSOption" FILE=.docker/build/nginx/conf.d/app.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="xContent" FILE=.docker/build/nginx/conf.d/app.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="xFrameOption" FILE=.docker/build/nginx/conf.d/app.conf
+    make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
+    make --no-print-directory delete-pattern-line-in-file PATTERN="locationFavicon" FILE=.docker/build/nginx/conf.d/app.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="locationRobots" FILE=.docker/build/nginx/conf.d/app.conf
+    make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="rootDefinition" REPLACE="root   /var/www;"
+    make --no-print-directory delete-pattern-line-in-file PATTERN="xXSSOption" FILE=.docker/build/nginx/conf.d/apps.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="xContent" FILE=.docker/build/nginx/conf.d/apps.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="xFrameOption" FILE=.docker/build/nginx/conf.d/apps.conf
+    make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
+    make --no-print-directory delete-pattern-line-in-file PATTERN="locationFavicon" FILE=.docker/build/nginx/conf.d/apps.conf
+    make --no-print-directory delete-pattern-line-in-file PATTERN="locationRobots" FILE=.docker/build/nginx/conf.d/apps.conf
     ;;
   "AllApp")
-    make remove-script SCRIPT_TYPE="Laravel"
+    make --no-print-directory remove-script SCRIPT_TYPE="Laravel"
     ;;
   * )
     echo "Invalid script ${RED}${SCRIPT_TYPE}${RESET}"

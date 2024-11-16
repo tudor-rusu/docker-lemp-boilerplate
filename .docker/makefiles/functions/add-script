@@ -7,12 +7,12 @@ set -e
 case "${SCRIPT_TYPE}" in
   "MCryptExt")
     echo "Add ${GREEN}MCrypt extension${RESET}"
-    make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mcryptSupport" REPLACE="libmcrypt-dev"
-    make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mcryptInstall" REPLACE="RUN docker-php-ext-install mcrypt"
+    make --no-print-directory replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mcryptSupport" REPLACE="libmcrypt-dev"
+    make --no-print-directory replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mcryptInstall" REPLACE="RUN docker-php-ext-install mcrypt"
     ;;
   "BCMathExt")
     echo "Add ${GREEN}BCMath extension${RESET}"
-    make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="bcmathInstall" REPLACE="RUN docker-php-ext-install bcmath"
+    make --no-print-directory replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="bcmathInstall" REPLACE="RUN docker-php-ext-install bcmath"
     ;;
   * )
     echo "Invalid script ${RED}${SCRIPT_TYPE}${RESET}"
