@@ -2,13 +2,11 @@
 # Configuration script
 set -e
 
-# include global vars and functions repository
-source .docker/functions.sh
+# Include variables
+source .docker/makefiles/variables.sh
 
-localOs=$(checkLocalOs)
-echo ${localOs}
-# set the project configuration
-echo "${BLU}Set the project configuration${RST}"
+## set the project configuration
+printf '\n%s\n' "${BLU}Set the project configuration for your ${LOCAL_OS} OS${RST}"
 startSettings=false
 while true; do
     read -rp "Do you wish to set the configuration? ${RED}[y/N]${RST}: " yn
@@ -19,13 +17,6 @@ while true; do
     esac
 done
 
-source src/.env # get configuration file
-projectName=$PROJECT_NAME
-projectUrl=$PROJECT_URL
-projectDescription=$PROJECT_DESCRIPTION
-projectAuthor=$PROJECT_AUTHOR
-projectGithub=$PROJECT_GITHUB
-
 if [[ ${startSettings} = true ]]
 then
   while true; do
@@ -33,8 +24,7 @@ then
     case ${yn} in
         [Yy]* )
           read -rp "Enter project name (use '-' instead 'space' between words): " newProjectName;
-          replaceFileRow src/.env "PROJECT_NAME" "PROJECT_NAME='$newProjectName'";
-          projectName=${newProjectName}
+          make replace-file-row FILE=src/.env SEARCH="PROJECT_NAME" REPLACE="PROJECT_NAME='$newProjectName'"
           break;;
         [Nn]* ) break;;
         * ) break;;
@@ -45,8 +35,7 @@ then
     case ${yn} in
         [Yy]* )
           read -rp "Enter project URL (use '-' instead 'space' between words): " newProjectURL;
-          replaceFileRow src/.env "PROJECT_URL" "PROJECT_URL='$newProjectURL'";
-          projectUrl=${newProjectURL}
+          make replace-file-row FILE=src/.env SEARCH="PROJECT_URL" REPLACE="PROJECT_URL='$newProjectURL'"
           break;;
         [Nn]* ) break;;
         * ) break;;
@@ -57,8 +46,7 @@ then
     case ${yn} in
         [Yy]* )
           read -rp "Enter project description: " newProjectDescription;
-          replaceFileRow src/.env "PROJECT_DESCRIPTION" "PROJECT_DESCRIPTION='$newProjectDescription'";
-          projectDescription=${newProjectDescription}
+          make replace-file-row FILE=src/.env SEARCH="PROJECT_DESCRIPTION" REPLACE="PROJECT_DESCRIPTION='$newProjectDescription'"
           break;;
         [Nn]* ) break;;
         * ) break;;
@@ -69,8 +57,7 @@ then
     case ${yn} in
         [Yy]* )
           read -rp "Enter project author: " newProjectAuthor;
-          replaceFileRow src/.env "PROJECT_AUTHOR" "PROJECT_AUTHOR='$newProjectAuthor'";
-          projectAuthor=${newProjectAuthor}
+          make replace-file-row FILE=src/.env SEARCH="PROJECT_AUTHOR" REPLACE="PROJECT_AUTHOR='$newProjectAuthor'"
           break;;
         [Nn]* ) break;;
         * ) break;;
@@ -81,8 +68,7 @@ then
     case ${yn} in
         [Yy]* )
           read -rp "Enter project Github URL: " newProjectGithub;
-          replaceFileRow src/.env "PROJECT_GITHUB" "PROJECT_GITHUB='$newProjectGithub'";
-          projectGithub=${newProjectGithub}
+          make replace-file-row FILE=src/.env SEARCH="PROJECT_GITHUB" REPLACE="PROJECT_GITHUB='$newProjectGithub'"
           break;;
         [Nn]* ) break;;
         * ) break;;
