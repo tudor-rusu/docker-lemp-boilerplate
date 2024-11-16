@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+## ex.: make delete-pattern-line-in-file PATTERN="mcryptSupport" FILE=.docker/build/php/Dockerfile
+
+set -e
+
+# delete pattern matching line in specific file
+sed -i "/${PATTERN}/d" "${FILE}"

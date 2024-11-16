@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+## If running on bash for Windows, any argument starting with a forward slash is automatically
+## interpreted as a drive path. To stop that, you can prefix with 2 forward slashes instead
+## of 1 - but in the specific case of openssl, that causes the first CN segment key to be read as
+## "/O" instead of "O", and is skipped. We work around that by prefixing with a spurious segment,
+## which will be skipped by openssl
+## ex.: make fixup-cn-subject CN_SUBJECT="/O=project/CN=project.local"
+
+set -e
+
+result="${CN_SUBJECT}"
+
+case $OSTYPE in
+    msys|win32) result="//XX=x${result}"
+esac
+
+echo "$result"

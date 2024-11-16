@@ -15,26 +15,37 @@ help:
 ########################################################################################################################
 
 ## replace row into a file [$FILE - file path and name; $SEARCH - search string; $REPLACE - replace string]
-## ex.: make replace-file-row FILE=.docker/build/php/Dockerfile SEARCH="mysqlExtensionsInstall" REPLACE="RUN docker-php-ext-install pdo pdo_mysql mysqli"
 replace-file-row:
 	@${MAKEFILES_DIR}functions/$@
 
 ## replace all string occurrences into a file [$FILE - file path and name; $SEARCH - search string; $REPLACE - replace string]
-## ex.: make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mysqlExtensionsInstall" REPLACE="RUN docker-php-ext-install pdo pdo_mysql mysqli"
 replace-all-in-file:
 	@${MAKEFILES_DIR}functions/$@
 
+## delete pattern matching line in specific file [$PATTERN - string which must delete; $FILE - file path and name]
+delete-pattern-line-in-file:
+	@PATTERN="${PATTERN}" FILE="${FILE}" RED="${RED}" GREEN="${GREEN}" RESET="${RESET}" ${MAKEFILES_DIR}functions/$@
+
 ## formated print a result on the screen [$LIST_STRING - array with all strings; $COLOR - color for border; $RESET - reset coloring]
-## ex.:
-##declare -a listString=( "mysqlExtensionsInstall" )
-##listString+=( "RUN docker-php-ext-install" )
-##listString+=( "pdo pdo_mysql mysqli" )
-##arrString="$(printf "(" ; printf "'%s' " "${listString[@]}" ; printf ")")"
-##make draw-result LIST_STRING="$arrString"
 draw-result:
 	@LIST_STRING="${LIST_STRING}" COLOR="${GREEN}" RESET="${RESET}" ${MAKEFILES_DIR}functions/$@
 
 ## return OS type
-## ex.: make check-local-os
 check-local-os:
 	@${MAKEFILES_DIR}functions/$@
+
+## return CN Subject fixed for Windows [$CN_SUBJECT - CN Subject in nginx config]
+fixup-cn-subject:
+	@CN_SUBJECT="${CN_SUBJECT}" ${MAKEFILES_DIR}functions/$@
+
+## add scripts [$SCRIPT_TYPE - string with what script will be added]
+add-script:
+	@SCRIPT_TYPE="${SCRIPT_TYPE}" RED="${RED}" GREEN="${GREEN}" RESET="${RESET}" ${MAKEFILES_DIR}functions/$@
+
+## remove scripts [$SCRIPT_TYPE - string with what script will be added]
+remove-script:
+	@SCRIPT_TYPE="${SCRIPT_TYPE}" RED="${RED}" GREEN="${GREEN}" RESET="${RESET}" ${MAKEFILES_DIR}functions/$@
+
+## update app script by adding support for Laravel in Nginx, based on version [$VERSION - Laravel version]
+update-nginx-laravel:
+	@VERSION="${VERSION}" RED="${RED}" RESET="${RESET}" ${MAKEFILES_DIR}functions/$@

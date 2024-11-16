@@ -1,3 +1,22 @@
+## [0.7.2] - 2024-11-16
+
+- first version of all updated functions
+
+### Modified
+- CHANGELOG.md
+- Makefile 
+- .docker/makefiles/functions/check-local-os
+- .docker/makefiles/functions/draw-result
+- .docker/makefiles/functions/replace-all-in-file
+- .docker/makefiles/functions/replace-file-row
+
+### Added
+- .docker/makefiles/functions/add-script
+- .docker/makefiles/functions/delete-pattern-line-in-file
+- .docker/makefiles/functions/fixup-cn-subject
+- .docker/makefiles/functions/remove-script
+- .docker/makefiles/functions/update-nginx-laravel
+
 ## [0.7.1] - 2024-11-14
 
 - add general functions to Makefile

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+## ex.: make add-script SCRIPT_TYPE="MCryptExt"
+
+set -e
+
+# add scripts
+case "${SCRIPT_TYPE}" in
+  "MCryptExt")
+    echo "Add ${GREEN}MCrypt extension${RESET}"
+    make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mcryptSupport" REPLACE="libmcrypt-dev"
+    make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="mcryptInstall" REPLACE="RUN docker-php-ext-install mcrypt"
+    ;;
+  "BCMathExt")
+    echo "Add ${GREEN}BCMath extension${RESET}"
+    make replace-all-in-file FILE=.docker/build/php/Dockerfile SEARCH="bcmathInstall" REPLACE="RUN docker-php-ext-install bcmath"
+    ;;
+  * )
+    echo "Invalid script ${RED}${SCRIPT_TYPE}${RESET}"
+    ;;
+esac

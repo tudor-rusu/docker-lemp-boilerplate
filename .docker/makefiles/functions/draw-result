@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+## ex.:
+##declare -a listString=( "mysqlExtensionsInstall" )
+##listString+=( "RUN docker-php-ext-install" )
+##listString+=( "pdo pdo_mysql mysqli" )
+##arrString="$(printf "(" ; printf "'%s' " "${listString[@]}" ; printf ")")"
+##make draw-result LIST_STRING="$arrString"
 
 set -e
 

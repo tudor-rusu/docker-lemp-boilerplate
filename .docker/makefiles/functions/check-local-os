@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+## ex.: make check-local-os
 
 set -e
 
