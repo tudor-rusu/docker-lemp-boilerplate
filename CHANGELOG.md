@@ -1,3 +1,16 @@
+## [0.7.7] - 2024-11-17
+
+- add nginx target to Makefile
+
+### Modified
+- CHANGELOG.md
+
+### Added
+- .docker/makefiles/build/nginx
+
+### Deleted
+- .docker/build/nginx/nginx.sh
+
 ## [0.7.6] - 2024-11-17
 
 - optimise functions for Makefiles
@@ -32,6 +45,7 @@
 - .docker/makefiles/build/app
 
 ### Deleted
+- .docker/build/app
 - .docker/build/app/app.sh
 
 ## [0.7.3] - 2024-11-16

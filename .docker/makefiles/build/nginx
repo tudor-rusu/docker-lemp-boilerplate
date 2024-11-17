@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+# Nginx script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+projectUrl=""
+
+# build and deploy nginx
+echo "${BLU}Build the ${BLD}nginx${RST} ${BLU}container${RST}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+httpProtocol='http'
+# HTTP
+nginxHttpHostPort=80
+for port in ${HTTP_PORTS_LIST}
+do
+  #TODO check implementation of the nc function in Windows
+  if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    nginxHttpHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="host80" REPLACE="$nginxHttpHostPort:80"
+echo "${GRN}HTTP settings have been made successfully.${RST}"
+
+# HTTPS
+while true; do
+  read -rp "Do you want to implement HTTPS access? ${RED}[y/N]${RST}: " yn
+  case ${yn} in
+      [Yy]* )
+        httpProtocol='https'
+        nginxHttpsHostPort=463
+        for port in ${HTTPS_PORTS_LIST}
+        do
+          if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+          then
+            nginxHttpsHostPort=${port}
+            break
+          fi
+        done
+        make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="host443" REPLACE="$nginxHttpsHostPort:443"
+        make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="nginxConf" REPLACE="apps.conf"
+        projectUrl="Project URL: https://${PROJECT_URL}"
+        echo "${BLU}Generate self-signed SSL Certificate for 365days${RST}"
+        make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
+        opensslSubject=$(make fixup-cn-subject CN_SUBJECT="/O=${PROJECT_NAME}/CN=${PROJECT_URL}")
+        openssl req -subj "${opensslSubject}" -addext "subjectAltName=DNS:${PROJECT_URL},DNS:www.${PROJECT_URL}" -x509 -newkey rsa:4096 -nodes -keyout "${CERT_DIR}"/"${PROJECT_URL}".key -out "${CERT_DIR}"/"${PROJECT_URL}".pem -days 365
+        echo "${GRN}HTTPS settings have been made successfully.${RST}"
+        break;;
+      [Nn]* )
+        make delete-pattern-line-in-file PATTERN='"host443"' FILE="${DOCKER_COMPOSE_MAIN_FILE}"
+        make delete-pattern-line-in-file PATTERN="localhost." FILE="${DOCKER_COMPOSE_MAIN_FILE}"
+        make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="nginxConf" REPLACE="app.conf"
+        projectUrl="Project URL: http://$PROJECT_URL"
+        if [[ ${nginxHttpHostPort} -ne 80 ]]
+        then
+            projectUrl+=":$nginxHttpHostPort"
+        fi
+        break;;
+      * )
+        make delete-pattern-line-in-file PATTERN='"host443"' FILE="${DOCKER_COMPOSE_MAIN_FILE}"
+        make delete-pattern-line-in-file PATTERN="localhost." FILE="${DOCKER_COMPOSE_MAIN_FILE}"
+        make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="nginxConf" REPLACE="app.conf"
+        projectUrl="Project URL: http://$PROJECT_URL"
+        if [[ ${nginxHttpHostPort} -ne 80 ]]
+        then
+            projectUrl+=":$nginxHttpHostPort"
+        fi
+        break;;
+  esac
+done
+
+# etc/hosts
+if [[ ${LOCAL_OS} == "Windows" ]]
+then
+    echo "${GRN}Add these lines in c:\Windows\System32\drivers\etc\hosts${RST}${RED}"
+    printf '\n%s\n%s' "# Project ${PROJECT_NAME}" "127.0.0.1 ${PROJECT_URL}"
+    echo ${RST}
+    make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
+    if [[ ${httpProtocol} == 'https' ]]
+    then
+        make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
+    fi
+else
+    if ! grep -Fxq "127.0.0.1 ${PROJECT_URL}" /etc/hosts
+    then
+      while true; do
+        read -rp "Do you want to add the project URL(${PROJECT_URL}) in etc/hosts? ${RED}[y/N]${RST}: " yn
+        case ${yn} in
+            [Yy]* )
+              echo ${GRN}
+              printf '\n%s\n%s' "# Project ${PROJECT_NAME}" "127.0.0.1 ${PROJECT_URL}" | sudo tee -a /etc/hosts
+              echo ${RST}
+              make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
+              if [[ ${httpProtocol} == 'https' ]]
+              then
+                make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
+              fi
+              echo "${GRN}Project URL(${PROJECT_URL}) have been add successfully.${RST}"
+              break;;
+            [Nn]* ) break;;
+            * ) break;;
+        esac
+      done
+    fi
+fi
+printf '\n%s\n' "${GRN}Nginx build and deploy have been made successfully.${RST}"
