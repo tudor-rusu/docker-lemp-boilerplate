@@ -1,3 +1,12 @@
+## [0.7.71] - 2024-11-17
+
+- update nginx target to Makefile
+
+### Modified
+- CHANGELOG.md
+- .docker/makefiles/build/nginx
+- .docker/makefiles/variables.sh
+
 ## [0.7.7] - 2024-11-17
 
 - add nginx target to Makefile

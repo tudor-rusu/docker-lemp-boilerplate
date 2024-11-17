@@ -4,6 +4,7 @@ set -e
 
 # get local OS
 LOCAL_OS=$(make --no-print-directory check-local-os); export LOCAL_OS
+HTTP_PROTOCOL='http'; export HTTP_PROTOCOL
 
 # paths
 DOCKER_DIR=.docker; export DOCKER_DIR

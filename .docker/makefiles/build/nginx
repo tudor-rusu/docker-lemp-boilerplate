@@ -11,7 +11,6 @@ projectUrl=""
 echo "${BLU}Build the ${BLD}nginx${RST} ${BLU}container${RST}"
 make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
 
-httpProtocol='http'
 # HTTP
 nginxHttpHostPort=80
 for port in ${HTTP_PORTS_LIST}
@@ -31,7 +30,7 @@ while true; do
   read -rp "Do you want to implement HTTPS access? ${RED}[y/N]${RST}: " yn
   case ${yn} in
       [Yy]* )
-        httpProtocol='https'
+        HTTP_PROTOCOL='https'; export HTTP_PROTOCOL
         nginxHttpsHostPort=463
         for port in ${HTTPS_PORTS_LIST}
         do
@@ -80,7 +79,7 @@ then
     printf '\n%s\n%s' "# Project ${PROJECT_NAME}" "127.0.0.1 ${PROJECT_URL}"
     echo ${RST}
     make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
-    if [[ ${httpProtocol} == 'https' ]]
+    if [[ ${HTTP_PROTOCOL} == 'https' ]]
     then
         make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
     fi
@@ -95,7 +94,7 @@ else
               printf '\n%s\n%s' "# Project ${PROJECT_NAME}" "127.0.0.1 ${PROJECT_URL}" | sudo tee -a /etc/hosts
               echo ${RST}
               make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
-              if [[ ${httpProtocol} == 'https' ]]
+              if [[ ${HTTP_PROTOCOL} == 'https' ]]
               then
                 make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
               fi
