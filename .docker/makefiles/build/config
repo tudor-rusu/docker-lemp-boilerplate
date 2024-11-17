@@ -20,55 +20,55 @@ done
 if [[ ${startSettings} = true ]]
 then
   while true; do
-    read -rp "Actual project name is ${REV}$PROJECT_NAME${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    read -rp "Actual project name is ${REV}${PROJECT_NAME}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
     case ${yn} in
         [Yy]* )
           read -rp "Enter project name (use '-' instead 'space' between words): " newProjectName;
-          make replace-file-row FILE=src/.env SEARCH="PROJECT_NAME" REPLACE="PROJECT_NAME='$newProjectName'"
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="PROJECT_NAME" REPLACE="PROJECT_NAME='$newProjectName'"
           break;;
         [Nn]* ) break;;
         * ) break;;
     esac
   done
   while true; do
-    read -rp "Actual project URL is ${REV}$PROJECT_URL${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
+    read -rp "Actual project URL is ${REV}${PROJECT_URL}${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
     case ${yn} in
         [Yy]* )
           read -rp "Enter project URL (use '-' instead 'space' between words): " newProjectURL;
-          make replace-file-row FILE=src/.env SEARCH="PROJECT_URL" REPLACE="PROJECT_URL='$newProjectURL'"
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="PROJECT_URL" REPLACE="PROJECT_URL='$newProjectURL'"
           break;;
         [Nn]* ) break;;
         * ) break;;
     esac
   done
   while true; do
-    read -rp "Actual project description is ${REV}$PROJECT_DESCRIPTION${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
+    read -rp "Actual project description is ${REV}${PROJECT_DESCRIPTION}${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
     case ${yn} in
         [Yy]* )
           read -rp "Enter project description: " newProjectDescription;
-          make replace-file-row FILE=src/.env SEARCH="PROJECT_DESCRIPTION" REPLACE="PROJECT_DESCRIPTION='$newProjectDescription'"
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="PROJECT_DESCRIPTION" REPLACE="PROJECT_DESCRIPTION='$newProjectDescription'"
           break;;
         [Nn]* ) break;;
         * ) break;;
     esac
   done
   while true; do
-    read -rp "Actual project author is ${REV}$PROJECT_AUTHOR${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
+    read -rp "Actual project author is ${REV}${PROJECT_AUTHOR}${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
     case ${yn} in
         [Yy]* )
           read -rp "Enter project author: " newProjectAuthor;
-          make replace-file-row FILE=src/.env SEARCH="PROJECT_AUTHOR" REPLACE="PROJECT_AUTHOR='$newProjectAuthor'"
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="PROJECT_AUTHOR" REPLACE="PROJECT_AUTHOR='$newProjectAuthor'"
           break;;
         [Nn]* ) break;;
         * ) break;;
     esac
   done
   while true; do
-    read -rp "Actual project Github URL is ${REV}$PROJECT_GITHUB${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
+    read -rp "Actual project Github URL is ${REV}${PROJECT_GITHUB}${RST}, do you want to change it ${RED}[y/N]${RST}: " yn
     case ${yn} in
         [Yy]* )
           read -rp "Enter project Github URL: " newProjectGithub;
-          make replace-file-row FILE=src/.env SEARCH="PROJECT_GITHUB" REPLACE="PROJECT_GITHUB='$newProjectGithub'"
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="PROJECT_GITHUB" REPLACE="PROJECT_GITHUB='$newProjectGithub'"
           break;;
         [Nn]* ) break;;
         * ) break;;

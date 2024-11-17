@@ -7,7 +7,6 @@ GREEN	:= "$$($(tput) setaf 2)"
 BLUE	:= "$$($(tput) setaf 4)"
 RESET	:= "$$($(tput) sgr0)"
 
-# Configurations
-COMPOSE_LIST 	= .docker/deploy/docker-compose-main.yml
+# Paths
 DOCKER_DIR 		= .docker
 MAKEFILES_DIR 	= $(DOCKER_DIR)/makefiles/

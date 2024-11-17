@@ -1,3 +1,14 @@
+## [0.7.5] - 2024-11-17
+
+- improve readability of variables for Makefiles
+
+### Modified
+- CHANGELOG.md
+- Makefile
+- .docker/makefiles/build/config
+- .docker/makefiles/variables.mk
+- .docker/makefiles/variables.sh
+
 ## [0.7.4] - 2024-11-16
 
 - add app and build targets to Makefile

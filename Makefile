@@ -22,8 +22,12 @@ config:
 app:
 	@${MAKEFILES_DIR}build/$@
 
+## build nginx containers and settings
+nginx:
+	@${MAKEFILES_DIR}build/$@
+
 ## build all steps
-build: config app
+build: config app nginx
 
 ########################################################################################################################
 # Functions
