@@ -3,36 +3,39 @@
 
 set -e
 
+# Include variables
+source .docker/makefiles/variables.sh
+
 if [ "${VERSION}" ]
 then
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="rootDefinition" REPLACE="root   /var/www/public;"
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="xFrameOption" REPLACE='add_header X-Frame-Options "SAMEORIGIN";'
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="xContent" REPLACE='add_header X-Content-Type-Options "nosniff";'
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="locationFavicon" REPLACE="location = /favicon.ico { access_log off; log_not_found off; }"
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="locationRobots" REPLACE="location = /robots.txt  { access_log off; log_not_found off; }"
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="rootDefinition" REPLACE="root   /var/www/public;"
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="xFrameOption" REPLACE='add_header X-Frame-Options "SAMEORIGIN";'
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="xContent" REPLACE='add_header X-Content-Type-Options "nosniff";'
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="locationFavicon" REPLACE="location = /favicon.ico { access_log off; log_not_found off; }"
-  make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="locationRobots" REPLACE="location = /robots.txt  { access_log off; log_not_found off; }"
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="rootDefinition" REPLACE="root   /var/www/public;"
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="xFrameOption" REPLACE='add_header X-Frame-Options "SAMEORIGIN";'
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="xContent" REPLACE='add_header X-Content-Type-Options "nosniff";'
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="locationFavicon" REPLACE="location = /favicon.ico { access_log off; log_not_found off; }"
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="locationRobots" REPLACE="location = /robots.txt  { access_log off; log_not_found off; }"
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="rootDefinition" REPLACE="root   /var/www/public;"
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="xFrameOption" REPLACE='add_header X-Frame-Options "SAMEORIGIN";'
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="xContent" REPLACE='add_header X-Content-Type-Options "nosniff";'
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="locationFavicon" REPLACE="location = /favicon.ico { access_log off; log_not_found off; }"
+  make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="locationRobots" REPLACE="location = /robots.txt  { access_log off; log_not_found off; }"
   case "${VERSION}" in
     "5.0" | "6.x")
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="indexDefinition" REPLACE="index  index.php index.html index.htm;"
       ;;
     "7.x")
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="indexDefinition" REPLACE="index  index.php;"
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="indexDefinition" REPLACE="index  index.php;"
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="indexDefinition" REPLACE="index  index.php;"
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="xXSSOption" REPLACE='add_header X-XSS-Protection "1; mode=block";'
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="indexDefinition" REPLACE="index  index.php;"
       ;;
     "8.x" | "9.x" | "10.x" | "11.x")
-      make --no-print-directory delete-pattern-line-in-file PATTERN="xXSSOption" FILE=.docker/build/nginx/conf.d/app.conf
-      make --no-print-directory delete-pattern-line-in-file PATTERN="xXSSOption" FILE=.docker/build/nginx/conf.d/apps.conf
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/app.conf SEARCH="indexDefinition" REPLACE="index  index.php;"
-      make --no-print-directory replace-all-in-file FILE=.docker/build/nginx/conf.d/apps.conf SEARCH="indexDefinition" REPLACE="index  index.php;"
+      make --no-print-directory delete-pattern-line-in-file PATTERN="xXSSOption" FILE="${NGINX_APP_CONF_FILE}"
+      make --no-print-directory delete-pattern-line-in-file PATTERN="xXSSOption" FILE="${NGINX_APP_S_CONF_FILE}"
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="indexDefinition" REPLACE="index  index.php;"
+      make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="indexDefinition" REPLACE="index  index.php;"
       ;;
     * )
       echo "Update Nginx Laravel - ${RED}invalid option ${VERSION}${RESET}"

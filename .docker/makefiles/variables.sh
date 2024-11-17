@@ -7,9 +7,23 @@ LOCAL_OS=$(make --no-print-directory check-local-os); export LOCAL_OS
 
 # paths
 DOCKER_DIR=.docker; export DOCKER_DIR
-ENV_FILE=src/.env; export ENV_FILE
-COMPOSE_LIST=${DOCKER_DIR}/deploy/docker-compose-main.yml; export COMPOSE_LIST
 MAKEFILES_DIR=${DOCKER_DIR}/makefiles; export MAKEFILES_DIR
+BUILD_DIR=${DOCKER_DIR}/build; export BUILD_DIR
+BUILD_DB_DIR=${BUILD_DIR}/db; export BUILD_DB_DIR
+BUILD_NGINX_DIR=${BUILD_DIR}/nginx; export BUILD_NGINX_DIR
+BUILD_PHP_DIR=${BUILD_DIR}/php; export BUILD_PHP_DIR
+DEPLOY_DIR=${DOCKER_DIR}/deploy; export DEPLOY_DIR
+CERT_DIR=${DEPLOY_DIR}/cert; export CERT_DIR
+
+# files
+ENV_FILE=src/.env; export ENV_FILE
+PHP_DOCKERFILE=${BUILD_PHP_DIR}/Dockerfile; export PHP_DOCKERFILE
+NGINX_APP_CONF_FILE=${BUILD_NGINX_DIR}/conf.d/app.conf; export NGINX_APP_CONF_FILE
+NGINX_APP_S_CONF_FILE=${BUILD_NGINX_DIR}/conf.d/apps.conf; export NGINX_APP_S_CONF_FILE
+DOCKER_COMPOSE_MAIN_FILE=${DEPLOY_DIR}/docker-compose-main.yml; export DOCKER_COMPOSE_MAIN_FILE
+
+# docker variables
+declare -a COMPOSE_LIST=("${DOCKER_COMPOSE_MAIN_FILE}"); export COMPOSE_LIST
 
 # Colors vars
 RED=$(tput setaf 1); export RED

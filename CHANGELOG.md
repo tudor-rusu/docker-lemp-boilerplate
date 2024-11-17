@@ -1,3 +1,14 @@
+## [0.7.6] - 2024-11-17
+
+- optimise functions for Makefiles
+
+### Modified
+- CHANGELOG.md
+- .docker/makefiles/variables.sh
+- .docker/makefiles/functions/add-script
+- .docker/makefiles/functions/remove-script
+- .docker/makefiles/functions/update-nginx-laravel
+
 ## [0.7.5] - 2024-11-17
 
 - improve readability of variables for Makefiles
