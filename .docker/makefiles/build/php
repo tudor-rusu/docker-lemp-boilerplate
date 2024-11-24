@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+# Php script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+phpVersion=${PHP_VERSION}
+majorVersion=$(echo "$phpVersion" | cut -c1-1)
+minorVersion=$(echo "$phpVersion" | cut -c3-3)
+
+# build and deploy php
+echo "${BLU}Build the ${BLD}php${RST} ${BLU}container${RST}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="app-gid" REPLACE="${APP_GID}"
+make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="app-uid" REPLACE="${APP_UID}"
+make --no-print-directory replace-all-in-file FILE="${PHP_LOCAL_INI_FILE}" SEARCH="UPLOAD_MAX_FILESIZE" REPLACE="${UPLOAD_MAX_FILESIZE}"
+make --no-print-directory replace-all-in-file FILE="${PHP_LOCAL_INI_FILE}" SEARCH="POST_MAX_SIZE" REPLACE="${POST_MAX_SIZE}"
+make --no-print-directory replace-all-in-file FILE="${PHP_LOCAL_INI_FILE}" SEARCH="PHP_MEMORY_LIMIT" REPLACE="${PHP_MEMORY_LIMIT}"
+make --no-print-directory replace-all-in-file FILE="${PHP_LOCAL_INI_FILE}" SEARCH="PHP_TIMEZONE" REPLACE="${PHP_TIMEZONE}"
+make --no-print-directory replace-all-in-file FILE="${NGINX_APP_CONF_FILE}" SEARCH="php_container_name" REPLACE="${PROJECT_NAME}-app"
+make --no-print-directory replace-all-in-file FILE="${NGINX_APP_S_CONF_FILE}" SEARCH="php_container_name" REPLACE="${PROJECT_NAME}-app"
+
+while true; do
+    read -rp "Actual project PHP version is ${REV}$phpVersion${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+          read -rp "Enter PHP version: " newPhpVersion;
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="PHP_VERSION" REPLACE="PHP_VERSION='$newPhpVersion'"
+          make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="php-version" REPLACE="$newPhpVersion"
+          phpVersion=$newPhpVersion
+          break;;
+        [Nn]* )
+          make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="php-version" REPLACE="$phpVersion"
+          break;;
+        * )
+          make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="php-version" REPLACE="$phpVersion"
+          break;;
+    esac
+done
+
+# add modifications for PHP >=7.4
+if [[ ${majorVersion}${minorVersion} -ge '74' ]]
+then
+  make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="php74install" REPLACE="libonig-dev libzip-dev"
+  make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="gdConfiguration" REPLACE="RUN docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/"
+else
+  make --no-print-directory remove-script SCRIPT_TYPE="Php74" #remove PHP >=7.4 scripts
+  make --no-print-directory replace-all-in-file FILE="${PHP_DOCKERFILE}" SEARCH="gdConfiguration" REPLACE="RUN docker-php-ext-configure gd --enable-gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/"
+fi
+
+printf '\n%s\n' "${GRN}PHP build and deploy have been made successfully.${RST}"

@@ -1,3 +1,18 @@
+## [0.7.8] - 2024-11-24
+
+- add php target to Makefile
+
+### Modified
+- CHANGELOG.md
+- Makefile
+- .docker/makefiles/variables.sh
+
+### Added
+- .docker/makefiles/build/php
+
+### Deleted
+- .docker/build/php/php.sh
+
 ## [0.7.71] - 2024-11-17
 
 - update nginx target to Makefile
