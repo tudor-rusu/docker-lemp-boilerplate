@@ -28,10 +28,23 @@ nginx:
 
 ## build php containers and settings
 php:
-	@${MAKEFILES_DIR}build/
+	@${MAKEFILES_DIR}build/$@
+
+## build db containers and settings
+db:
+	@${MAKEFILES_DIR}build/$@
+
+mysql:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
+
+postgresql:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
+
+sqlite:
+	@${MAKEFILES_DIR}build/dbs/$@
 
 ## build all steps
-build: config app nginx php
+build: config app nginx php db
 
 ########################################################################################################################
 # Functions

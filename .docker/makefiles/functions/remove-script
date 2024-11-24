@@ -39,6 +39,11 @@ case "${SCRIPT_TYPE}" in
     make --no-print-directory delete-pattern-line-in-file PATTERN="sqliteExtensionsPrerequisites" FILE="${PHP_DOCKERFILE}"
     make --no-print-directory delete-pattern-line-in-file PATTERN="sqliteExtensionsInstall" FILE="${PHP_DOCKERFILE}"
     ;;
+  "AllDBSupport")
+      make --no-print-directory remove-script SCRIPT_TYPE="Mysql"
+      make --no-print-directory remove-script SCRIPT_TYPE="Postgres"
+      make --no-print-directory remove-script SCRIPT_TYPE="Sqlite"
+      ;;
   "Redis")
     echo "Remove ${GREEN}Redis support${RESET}"
     make --no-print-directory delete-pattern-line-in-file PATTERN="Redis" FILE="${ENV_FILE}"

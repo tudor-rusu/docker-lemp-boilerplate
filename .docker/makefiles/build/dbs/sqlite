@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SQLite DB script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="sqliteExtensionsUpdate" REPLACE="RUN apt-get update"
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="sqliteExtensionsPrerequisites" REPLACE="RUN apt-get install -y sqlite3 libsqlite3-dev"
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="sqliteExtensionsInstall" REPLACE="RUN docker-php-ext-install pdo pdo_sqlite"
+# remove other DB engines
+make --no-print-directory remove-script SCRIPT_TYPE="Mysql" #remove MySQL
+make --no-print-directory remove-script SCRIPT_TYPE="Postgres" #remove PostgreSQL
+
+make delete-pattern-line-in-file PATTERN="dbContainerName" FILE="${DOCKER_COMPOSE_MAIN_FILE}"
+
+printf '\n%s\n' "${GRN}SQLite build and deploy have been made successfully.${RST}"

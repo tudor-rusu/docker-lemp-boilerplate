@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# MYSQL DB script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="mysqlExtensionsInstall" REPLACE="RUN docker-php-ext-install pdo pdo_mysql mysqli"
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="mysqlExtensionsEnable" REPLACE="RUN docker-php-ext-enable mysqli"
+make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="MYSQL_HOST" REPLACE="MYSQL_HOST='${PROJECT_NAME}-mysql'"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="dbContainerName" REPLACE="${PROJECT_NAME}-mysql"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+# remove other DB engines
+make --no-print-directory remove-script SCRIPT_TYPE="Postgres" #remove PostgreSQL
+make --no-print-directory remove-script SCRIPT_TYPE="Sqlite" #remove SQLite
+
+while true; do
+    read -rp "Actual project MySQL version is ${REV}${MYSQL_VERSION}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+            read -rp "Enter MySQL version: " newMySQLVersion;
+            make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="MYSQL_VERSION" REPLACE="MYSQL_VERSION='$newMySQLVersion'"
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlVersion" REPLACE="$newMySQLVersion"
+            break;;
+        [Nn]* )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlVersion" REPLACE="${MYSQL_VERSION}"
+            break;;
+        * )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlVersion" REPLACE="${MYSQL_VERSION}"
+            break;;
+    esac
+done
+
+mysqlHostPort=3306
+for port in ${MYSQL_PORTS}
+do
+  if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    mysqlHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="host3306" REPLACE="$mysqlHostPort:3306"
+
+while true; do
+    read -rp "Actual project MySQL database is ${REV}${MYSQL_DATABASE}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+            read -rp "Enter database name: " newDatabase;
+            make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="MYSQL_DATABASE" REPLACE="MYSQL_DATABASE='${newDatabase,,}'"
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlDatabase" REPLACE="${newDatabase,,}"
+            break;;
+        [Nn]* )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlDatabase" REPLACE="${MYSQL_DATABASE}"
+            break;;
+        * )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlDatabase" REPLACE="${MYSQL_DATABASE}"
+            break;;
+    esac
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlRootPassword" REPLACE="${MYSQL_ROOT_PASSWORD}"
+
+printf '\n%s\n' "${GRN}MySQL build and deploy have been made successfully.${RST}"

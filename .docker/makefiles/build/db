@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# DB script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+dbSupport=false
+
+while true; do
+    read -rp "Do you want to add DB support to the project? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+          dbSupport=true
+          break;;
+        [Nn]* ) break;;
+        * ) break;;
+    esac
+done
+
+# build and deploy DB
+if [[ ${dbSupport} = false ]]
+then
+    echo "${RED}No DB Support.${RST}"
+    make --no-print-directory delete-pattern-line-in-file PATTERN="dbContainerName" FILE="${DOCKER_COMPOSE_MAIN_FILE}"
+    make --no-print-directory remove-script SCRIPT_TYPE="AllDBSupport" #remove all DB support scripts
+else
+    echo "${BLU}Build the ${BLD}db${RST} ${BLU}container${RST}"
+    # chose the DB engine
+    PS3="Please enter your choice: "
+    options=("MySQL" "PostgreSQL" "SQLite" "Quit")
+    select opt in "${options[@]}"
+    do
+        case ${opt} in
+            "MySQL")
+                echo "${GRN}You chose $opt Engine.${RST}"
+                COMPOSE_LIST+=("${DOCKER_COMPOSE_MYSQL_FILE}")
+                make --no-print-directory mysql COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+                break
+                ;;
+            "PostgreSQL")
+                echo "${GRN}You chose $opt Engine.${RST}"
+                COMPOSE_LIST+=("${DOCKER_COMPOSE_POSTGRESQL_FILE}")
+                make --no-print-directory mysql COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+                break
+                ;;
+            "SQLite")
+                echo "${GRN}You chose $opt Engine.${RST}"
+                make --no-print-directory sqlite
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            * )
+                echo "invalid option $REPLY"
+                break
+                ;;
+        esac
+    done
+fi

@@ -1,3 +1,22 @@
+## [0.7.9] - 2024-11-24
+
+- add db target to Makefile
+
+### Modified
+- CHANGELOG.md
+- Makefile
+- .docker/makefiles/variables.sh
+- .docker/makefiles/functions/remove-script
+
+### Added
+- .docker/makefiles/build/db
+- .docker/makefiles/build/dbs/mysql
+- .docker/makefiles/build/dbs/postgresql
+- .docker/makefiles/build/dbs/sqlite
+
+### Deleted
+- .docker/build/db/db.sh
+
 ## [0.7.8] - 2024-11-24
 
 - add php target to Makefile

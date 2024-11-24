@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# PostgreSQL DB script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="postgresExtensionsUpdate" REPLACE="RUN apt-get update"
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="postgresExtensionsPrerequisites" REPLACE="RUN apt-get install -y libpq-dev"
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="postgresExtensionsConfigure" REPLACE="RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsq"
+make --no-print-directory replace-file-row FILE="${PHP_DOCKERFILE}" SEARCH="postgresExtensionsInstall" REPLACE="RUN docker-php-ext-install pdo pdo_pgsql pgsql"
+make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="POSTGRES_HOST" REPLACE="POSTGRES_HOST='${PROJECT_NAME}-postgresql'"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="dbContainerName" REPLACE="${PROJECT_NAME}-postgresql"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+# remove other DB engines
+make --no-print-directory remove-script SCRIPT_TYPE="Mysql" #remove MySQL
+make --no-print-directory remove-script SCRIPT_TYPE="Sqlite" #remove SQLite
+
+while true; do
+    read -rp "Actual project PostgreSQL version is ${REV}${POSTGRES_VERSION}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+            read -rp "Enter PostgreSQL version: " newPostgresVersion;
+            make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="POSTGRES_VERSION" REPLACE="POSTGRES_VERSION='$newPostgresVersion'"
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresVersion" REPLACE="$newPostgresVersion"
+            break;;
+        [Nn]* )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresVersion" REPLACE="${POSTGRES_VERSION}"
+            break;;
+        * )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresVersion" REPLACE="${POSTGRES_VERSION}"
+            break;;
+    esac
+done
+
+postgresHostPort=5432
+for port in ${POSTGRES_PORTS}
+do
+  if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    postgresHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="host5432" REPLACE="$postgresHostPort:5432"
+
+while true; do
+    read -rp "Actual project PostgreSQL database is ${REV}${POSTGRES_DATABASE}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+            read -rp "Enter database name: " newDatabase;
+            make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="POSTGRES_DATABASE" REPLACE="POSTGRES_DATABASE='${newDatabase,,}'"
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresDatabase" REPLACE="${newDatabase,,}"
+            break;;
+        [Nn]* )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresDatabase" REPLACE="${POSTGRES_DATABASE}"
+            break;;
+        * )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresDatabase" REPLACE="${POSTGRES_DATABASE}"
+            break;;
+    esac
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresUser" REPLACE="${POSTGRES_USER}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresPassword" REPLACE="${POSTGRES_PASSWORD}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_POSTGRESQL_FILE}" SEARCH="postgresHostAuthMethod" REPLACE="${POSTGRES_AUTH_METHOD}"
+
+printf '\n%s\n' "${GRN}PostgreSQL build and deploy have been made successfully.${RST}"
