@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# phpPostgresAdmin script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPPGADMIN_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# set phpPgAdmin port
+phpPgAdminHostPort=8082
+for port in ${PGA_PORTS}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    phpPgAdminHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPPGADMIN_FILE}" SEARCH="hostphppgadmin" REPLACE="$phpPgAdminHostPort:80"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPPGADMIN_FILE}" SEARCH="phppgadminHost" REPLACE="${POSTGRES_HOST}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPPGADMIN_FILE}" SEARCH="phppgadminDb" REPLACE="${POSTGRES_DATABASE}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPPGADMIN_FILE}" SEARCH="dbContainerName" REPLACE="{$PROJECT_NAME}-postgresql"
+
+PHPPGADMIN_URL="phpMyAdmin URL: http://$PROJECT_URL:$phpPgAdminHostPort"; export PHPPGADMIN_URL
+
+printf '\n%s\n' "${GRN}phpPostgresAdmin build and deploy have been made successfully.${RST}"

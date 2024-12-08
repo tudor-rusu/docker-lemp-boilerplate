@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# DB Tools script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+# Set possible tools for specific DB Engine
+case ${DB_ENGINE} in
+    "MySQL")
+        options=("${MYSQL_TOOLS[@]}")
+        ;;
+    "PostgreSQL")
+        options=("${POSTGRESQL_TOOLS[@]}")
+        ;;
+    "SQLite")
+        options=("${SQLITE_TOOLS[@]}")
+        ;;
+esac
+
+menuMultiple() {
+    echo "Available options:"
+    for i in "${!options[@]}"; do
+        printf "%3d%s) %s\n" $((i+1)) "${choices[i]:- }" "${options[i]}"
+    done
+    if [[ "$msg" ]]; then echo "$msg"; fi
+}
+
+prompt="Check an option (again to uncheck, ENTER when done): "
+while menuMultiple && read -rp "$prompt" num && [[ "$num" ]];
+do
+    [[ "$num" != *[![:digit:]]* ]] &&
+    (( num > 0 && num <= ${#options[@]} )) ||
+    { msg="Invalid option: $num"; continue; }
+    ((num--)); msg="${options[num]} was ${choices[num]:+un}checked"
+    [[ "${choices[num]}" ]] && choices[num]="" || choices[num]="+"
+done
+
+printf "You selected";
+msg=" nothing"
+toolsList=()
+for i in "${!options[@]}";
+do
+    [[ "${choices[i]}" ]] && {
+        printf " %s" "${options[i]}";
+        msg="";
+        toolsList+=( "${options[i]}" );
+    }
+done
+echo "$msg"
+
+# Redis
+if [[ "${toolsList[*]}" =~ "Redis" ]];
+then
+    COMPOSE_LIST+=("${DOCKER_COMPOSE_REDIS_FILE}")
+    make --no-print-directory redis COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+else
+    printf '%s\n' "${RED}Redis was not selected and will not be installed.${RST}"
+    make --no-print-directory remove-script SCRIPT_TYPE="Redis" #remove Redis
+fi
+
+# phpMyAdmin
+if [[ "${toolsList[*]}" =~ "phpMyAdmin" ]];
+then
+    COMPOSE_LIST+=("${DOCKER_COMPOSE_PHPMYADMIN_FILE}")
+    make --no-print-directory phpmyadmin COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+else
+    printf '%s\n' "${RED}phpMyAdmin was not selected and will not be installed.${RST}"
+    make --no-print-directory remove-script SCRIPT_TYPE="PhpMyAdmin" #remove phpMyAdmin
+fi
+
+# phpPgAdmin
+if [[ "${toolsList[*]}" =~ "phpPgAdmin" ]];
+then
+    COMPOSE_LIST+=("${DOCKER_COMPOSE_PHPPGADMIN_FILE}")
+    make --no-print-directory phppgadmin COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+else
+    printf '%s\n' "${RED}phpPostgresAdmin was not selected and will not be installed.${RST}"
+    make --no-print-directory remove-script SCRIPT_TYPE="PhpPgAdmin" #remove phpPgAdmin
+fi
+
+# phpLiteAdmin
+if [[ "${toolsList[*]}" =~ "phpLiteAdmin" ]];
+then
+    COMPOSE_LIST+=("${DOCKER_COMPOSE_PHPLITEADMIN_FILE}")
+    make --no-print-directory phpliteadmin COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+else
+    printf '%s\n' "${RED}phpLiteAdmin was not selected and will not be installed.${RST}"
+    make --no-print-directory remove-script SCRIPT_TYPE="PhpLiteAdmin" #remove phpLiteAdmin
+fi

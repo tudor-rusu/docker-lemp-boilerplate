@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# Redis script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# set Redis host port
+redisHostPort=6379
+for port in ${REDIS_PORTS}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    redisHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="hostRedis" REPLACE="$redisHostPort:6379"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="portRedis" REPLACE="${redisHostPort}"
+
+# set Redis Commander host port
+redisCommanderHostPort=8081
+for port in ${REDIS_COMMANDER_PORTS}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    redisCommanderHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="hostCommander" REPLACE="$redisCommanderHostPort:8081"
+
+# set user name and password for local Redis user
+while true; do
+    read -rp "Actual Redis user name is ${REV}${REDIS_USER}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+            read -rp "Enter Redis user name: " newUsername;
+            make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="REDIS_USER" REPLACE="REDIS_USER='${newUsername,,}'"
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="redisUser" REPLACE="${newUsername,,}"
+            break;;
+        [Nn]* )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="redisUser" REPLACE="${REDIS_USER}"
+            break;;
+        * )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="redisUser" REPLACE="${REDIS_USER}"
+            break;;
+    esac
+done
+while true; do
+    read -rp "Actual Redis user password is ${REV}${REDIS_PASSWORD}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+            read -rp "Enter Redis user password: " newPassword;
+            make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="REDIS_PASSWORD" REPLACE="REDIS_PASSWORD='${newPassword,,}'"
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="redisPassword" REPLACE="${newPassword,,}"
+            break;;
+        [Nn]* )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="redisPassword" REPLACE="${REDIS_PASSWORD}"
+            break;;
+        * )
+            make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_REDIS_FILE}" SEARCH="redisPassword" REPLACE="${REDIS_PASSWORD}"
+            break;;
+    esac
+done
+REDIS_URL="Redis URL: http://${PROJECT_URL}:$redisCommanderHostPort"; export REDIS_URL
+
+printf '\n%s\n' "${GRN}Redis build and deploy have been made successfully.${RST}"

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# phpLiteAdmin script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPLITEADMIN_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# set phpLiteAdmin port
+phpLiteAdminHostPort=2015
+for port in ${PLA_PORTS}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    phpLiteAdminHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPLITEADMIN_FILE}" SEARCH="hostphpLiteAdmin" REPLACE="$phpLiteAdminHostPort:2015"
+
+# set SQLite DB path
+while true; do
+  read -rp "Actual SQLite DB path is ${REV}${PLA_DB_PATH}${RST}, do you want to change it? ${RED}[y/N]${RST}: " yn
+  case ${yn} in
+      [Yy]* )
+          read -rp "Enter SQLite DB path: " newDbPath;
+          make --no-print-directory replace-file-row FILE="${ENV_FILE}" SEARCH="${PLA_DB_PATH}" REPLACE="${PLA_DB_PATH}='${newDbPath,,}'"
+          make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPLITEADMIN_FILE}" SEARCH="sqlLiteDbPath" REPLACE="${newDbPath,,}"
+          break;;
+      [Nn]* )
+          make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPLITEADMIN_FILE}" SEARCH="sqlLiteDbPath" REPLACE="${PLA_DB_PATH}"
+          break;;
+      * )
+          make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPLITEADMIN_FILE}" SEARCH="sqlLiteDbPath" REPLACE="${PLA_DB_PATH}"
+          break;;
+  esac
+done
+
+PHPLITEADMIN_URL="phpLiteAdmin URL: http://${PROJECT_URL}:$phpLiteAdminHostPort/phpliteadmin.php"; export PHPLITEADMIN_URL
+
+printf '\n%s\n' "${GRN}phpLiteAdmin build and deploy have been made successfully.${RST}"

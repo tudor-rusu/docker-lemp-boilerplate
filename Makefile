@@ -43,6 +43,21 @@ postgresql:
 sqlite:
 	@${MAKEFILES_DIR}build/dbs/$@
 
+db-tools:
+	@DB_ENGINE="${DB_ENGINE}" ${MAKEFILES_DIR}build/$@
+
+redis:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
+
+phpmyadmin:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
+
+phppgadmin:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
+
+phpliteadmin:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
+
 ## build all steps
 build: config app nginx php db
 

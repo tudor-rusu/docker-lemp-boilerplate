@@ -1,3 +1,27 @@
+## [0.7.10] - 2024-12-08
+
+- add dbTools target to Makefile
+
+### Modified
+- CHANGELOG.md
+- Makefile
+- .docker/makefiles/build/db
+- .docker/makefiles/build/dbs/mysql
+- .docker/makefiles/build/dbs/postgresql
+- .docker/makefiles/build/nginx
+- .docker/makefiles/functions/remove-script
+- .docker/makefiles/variables.sh
+
+### Added
+- .docker/makefiles/build/db-tools
+- .docker/makefiles/build/dbs/phpliteadmin
+- .docker/makefiles/build/dbs/phpmyadmin
+- .docker/makefiles/build/dbs/phppgadmin
+- .docker/makefiles/build/dbs/redis
+
+### Deleted
+- .docker/build/db/dbtools.sh
+
 ## [0.7.9] - 2024-11-24
 
 - add db target to Makefile

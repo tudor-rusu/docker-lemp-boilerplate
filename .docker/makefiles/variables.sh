@@ -9,12 +9,12 @@ HTTP_PROTOCOL='http'; export HTTP_PROTOCOL
 # paths
 DOCKER_DIR=.docker; export DOCKER_DIR
 MAKEFILES_DIR=${DOCKER_DIR}/makefiles; export MAKEFILES_DIR
-BUILD_DIR=${DOCKER_DIR}/build; export BUILD_DIR
-BUILD_DB_DIR=${BUILD_DIR}/db; export BUILD_DB_DIR
-BUILD_NGINX_DIR=${BUILD_DIR}/nginx; export BUILD_NGINX_DIR
-BUILD_PHP_DIR=${BUILD_DIR}/php; export BUILD_PHP_DIR
 DEPLOY_DIR=${DOCKER_DIR}/deploy; export DEPLOY_DIR
 CERT_DIR=${DEPLOY_DIR}/cert; export CERT_DIR
+BUILD_DIR=${DOCKER_DIR}/build; export BUILD_DIR
+BUILD_NGINX_DIR=${BUILD_DIR}/nginx; export BUILD_NGINX_DIR
+BUILD_PHP_DIR=${BUILD_DIR}/php; export BUILD_PHP_DIR
+BUILD_DB_DIR=${BUILD_DIR}/db; export BUILD_DB_DIR
 
 # files
 ENV_FILE=src/.env; export ENV_FILE
@@ -25,9 +25,24 @@ NGINX_APP_S_CONF_FILE=${BUILD_NGINX_DIR}/conf.d/apps.conf; export NGINX_APP_S_CO
 DOCKER_COMPOSE_MAIN_FILE=${DEPLOY_DIR}/docker-compose-main.yml; export DOCKER_COMPOSE_MAIN_FILE
 DOCKER_COMPOSE_MYSQL_FILE=${DEPLOY_DIR}/docker-compose-mysql.yml; export DOCKER_COMPOSE_MYSQL_FILE
 DOCKER_COMPOSE_POSTGRESQL_FILE=${DEPLOY_DIR}/docker-compose-postgresql.yml; export DOCKER_COMPOSE_POSTGRESQL_FILE
+DOCKER_COMPOSE_REDIS_FILE=${DEPLOY_DIR}/docker-compose-redis.yml; export DOCKER_COMPOSE_REDIS_FILE
+DOCKER_COMPOSE_PHPMYADMIN_FILE=${DEPLOY_DIR}/docker-compose-phpmyadmin.yml; export DOCKER_COMPOSE_PHPMYADMIN_FILE
+DOCKER_COMPOSE_PHPPGADMIN_FILE=${DEPLOY_DIR}/docker-compose-phppgadmin.yml; export DOCKER_COMPOSE_PHPPGADMIN_FILE
+DOCKER_COMPOSE_PHPLITEADMIN_FILE=${DEPLOY_DIR}/docker-compose-phpliteadmin.yml; export DOCKER_COMPOSE_PHPLITEADMIN_FILE
 
 # docker variables
 declare -a COMPOSE_LIST=("${DOCKER_COMPOSE_MAIN_FILE}"); export COMPOSE_LIST
+
+# db tools array based on DB Engine
+declare -a MYSQL_TOOLS=( "Redis" "phpMyAdmin" ); export MYSQL_TOOLS
+declare -a POSTGRESQL_TOOLS=( "Redis" "phpPgAdmin" ); export POSTGRESQL_TOOLS
+declare -a SQLITE_TOOLS=( "phpLiteAdmin" ); export SQLITE_TOOLS
+
+# local Docker URLs
+REDIS_URL=""; export REDIS_URL
+PHPMYADMIN_URL=""; export PHPMYADMIN_URL
+PHPPGADMIN_URL=""; export PHPPGADMIN_URL
+PHPLITEADMIN_URL=""; export PHPLITEADMIN_URL
 
 # Colors vars
 RED=$(tput setaf 1); export RED

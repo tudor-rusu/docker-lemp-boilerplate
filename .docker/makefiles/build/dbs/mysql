@@ -36,7 +36,7 @@ done
 mysqlHostPort=3306
 for port in ${MYSQL_PORTS}
 do
-  if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
   then
     mysqlHostPort=${port}
     break
@@ -63,3 +63,26 @@ done
 make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MYSQL_FILE}" SEARCH="mysqlRootPassword" REPLACE="${MYSQL_ROOT_PASSWORD}"
 
 printf '\n%s\n' "${GRN}MySQL build and deploy have been made successfully.${RST}"
+
+# manage DB Tools support
+dbToolsSupport=false
+
+while true; do
+    read -rp "Do you want to add DB Tools to the project? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+          dbToolsSupport=true
+          break;;
+        [Nn]* ) break;;
+        * ) break;;
+    esac
+done
+
+if [[ ${dbToolsSupport} = false ]]
+then
+    echo "${RED}No DB Tools Support.${RST}"
+    make --no-print-directory remove-script SCRIPT_TYPE="AllDBTools" #remove all DB Tools scripts
+else
+    echo "${BLU}Build the ${BLD}DB Tools${RST} ${BLU}containers${RST}"
+    make --no-print-directory db-tools COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}" DB_ENGINE="MySQL"
+fi

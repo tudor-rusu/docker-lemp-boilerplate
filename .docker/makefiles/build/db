@@ -24,6 +24,7 @@ then
     echo "${RED}No DB Support.${RST}"
     make --no-print-directory delete-pattern-line-in-file PATTERN="dbContainerName" FILE="${DOCKER_COMPOSE_MAIN_FILE}"
     make --no-print-directory remove-script SCRIPT_TYPE="AllDBSupport" #remove all DB support scripts
+    make --no-print-directory remove-script SCRIPT_TYPE="AllDBTools" #remove all DB Tools scripts
 else
     echo "${BLU}Build the ${BLD}db${RST} ${BLU}container${RST}"
     # chose the DB engine
@@ -41,7 +42,7 @@ else
             "PostgreSQL")
                 echo "${GRN}You chose $opt Engine.${RST}"
                 COMPOSE_LIST+=("${DOCKER_COMPOSE_POSTGRESQL_FILE}")
-                make --no-print-directory mysql COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+                make --no-print-directory postgresql COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
                 break
                 ;;
             "SQLite")

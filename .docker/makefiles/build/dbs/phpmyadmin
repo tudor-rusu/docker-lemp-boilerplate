@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# phpMyAdmin script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPMYADMIN_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# set phpMyAdmin port
+phpMyAdminHostPort=8082
+for port in ${PMA_PORTS}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    phpMyAdminHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPMYADMIN_FILE}" SEARCH="hostphpMyAdmin" REPLACE="$phpMyAdminHostPort:80"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPMYADMIN_FILE}" SEARCH="mysqlHost" REPLACE="${MYSQL_HOST}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPMYADMIN_FILE}" SEARCH="mysqlRootPassword" REPLACE="${MYSQL_ROOT_PASSWORD}"
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_PHPMYADMIN_FILE}" SEARCH="dbContainerName" REPLACE="{$PROJECT_NAME}-mysql"
+
+PHPMYADMIN_URL="Redis URL: http://${PROJECT_URL}:$phpMyAdminHostPort"; export PHPMYADMIN_URL
+
+printf '\n%s\n' "${GRN}phpMyAdmin build and deploy have been made successfully.${RST}"

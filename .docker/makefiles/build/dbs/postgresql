@@ -38,7 +38,7 @@ done
 postgresHostPort=5432
 for port in ${POSTGRES_PORTS}
 do
-  if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
   then
     postgresHostPort=${port}
     break

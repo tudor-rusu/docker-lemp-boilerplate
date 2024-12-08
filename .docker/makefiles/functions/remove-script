@@ -64,7 +64,7 @@ case "${SCRIPT_TYPE}" in
     make --no-print-directory delete-pattern-line-in-file PATTERN="phpLiteAdmin" FILE="${ENV_FILE}"
     make --no-print-directory delete-pattern-line-in-file PATTERN="PLA" FILE="${ENV_FILE}"
     ;;
-  "Tools")
+  "AllDBTools")
     make --no-print-directory remove-script SCRIPT_TYPE="Redis"
     make --no-print-directory remove-script SCRIPT_TYPE="PhpMyAdmin"
     make --no-print-directory remove-script SCRIPT_TYPE="PhpPgAdmin"

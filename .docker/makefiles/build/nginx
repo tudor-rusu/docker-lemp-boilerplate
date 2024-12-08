@@ -15,8 +15,7 @@ make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}"
 nginxHttpHostPort=80
 for port in ${HTTP_PORTS_LIST}
 do
-  #TODO check implementation of the nc function in Windows
-  if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
   then
     nginxHttpHostPort=${port}
     break
@@ -34,7 +33,7 @@ while true; do
         nginxHttpsHostPort=463
         for port in ${HTTPS_PORTS_LIST}
         do
-          if [[ $(nc -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+          if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
           then
             nginxHttpsHostPort=${port}
             break
