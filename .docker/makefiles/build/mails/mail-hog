@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Mail Hog script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_HOG_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# remove other mail engines
+make --no-print-directory remove-script SCRIPT_TYPE="MailSlurper" #remove MailSlurper
+make --no-print-directory remove-script SCRIPT_TYPE="MailCatcher" #remove MailCatcher
+
+# set WWW Host Port
+mailHogWwwHostPort=8025
+for port in ${MAIL_HOG_WWW_PORT}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    mailHogWwwHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_HOG_FILE}" SEARCH="hosthogwww" REPLACE="$mailHogWwwHostPort:8025"
+
+MAIL_HOG_URL="MailHog URL: http://${PROJECT_URL}:$mailHogWwwHostPort"; export MAIL_HOG_URL
+printf '\n%s\n' "${GRN}MailHog build and deploy have been made successfully.${RST}"

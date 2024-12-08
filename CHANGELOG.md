@@ -1,3 +1,21 @@
+## [0.7.11] - 2024-12-08
+
+- add mail target to Makefile
+
+### Modified
+- CHANGELOG.md
+- Makefile
+- .docker/makefiles/variables.sh
+
+### Added
+- .docker/makefiles/build/mail
+- .docker/makefiles/build/mails/mail-catcher
+- .docker/makefiles/build/mails/mail-slurper
+- .docker/makefiles/build/mails/mail-hog
+
+### Deleted
+- .docker/build/mail/mail.sh
+
 ## [0.7.10] - 2024-12-08
 
 - add dbTools target to Makefile

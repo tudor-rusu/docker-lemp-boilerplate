@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Mail Catcher script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_CATCHER_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# remove other mail engines
+make --no-print-directory remove-script SCRIPT_TYPE="MailSlurper" #remove MailSlurper
+make --no-print-directory remove-script SCRIPT_TYPE="MailHog" #remove MailHog
+
+# set WWW Host Port
+mailCatcherWwwHostPort=1080
+for port in ${MAIL_CATCHER_WWW_PORT}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    mailCatcherWwwHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_CATCHER_FILE}" SEARCH="hostcatchersmtp" REPLACE="$mailCatcherWwwHostPort:1080"
+
+MAIL_CATCHER_URL="MailCatcher URL: http://${PROJECT_URL}:$mailCatcherWwwHostPort"; export MAIL_CATCHER_URL
+printf '\n%s\n' "${GRN}MailCatcher build and deploy have been made successfully.${RST}"

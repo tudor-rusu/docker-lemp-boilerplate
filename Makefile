@@ -58,8 +58,21 @@ phppgadmin:
 phpliteadmin:
 	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/dbs/$@
 
+## build mail containers and settings
+mail:
+	@${MAKEFILES_DIR}build/$@
+
+mail-slurper:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/mails/$@
+
+mail-catcher:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/mails/$@
+
+mail-hog:
+	@COMPOSE_LIST_UPDATED="${COMPOSE_LIST_UPDATED}" ${MAKEFILES_DIR}build/mails/$@
+
 ## build all steps
-build: config app nginx php db
+build: config app nginx php db mail
 
 ########################################################################################################################
 # Functions

@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Mail Slurper script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+declare -a COMPOSE_LIST="${COMPOSE_LIST_UPDATED}"; export COMPOSE_LIST
+
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_SLURPER_FILE}" SEARCH="project" REPLACE="${PROJECT_NAME}"
+
+# remove other mail engines
+make --no-print-directory remove-script SCRIPT_TYPE="MailCatcher" #remove MailCatcher
+make --no-print-directory remove-script SCRIPT_TYPE="MailHog" #remove MailHog
+
+# set SMTP Host Port
+mailSlurperSmtpHostPort=2500
+for port in ${MAIL_SLURPER_SMTP_PORT}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    mailSlurperSmtpHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_SLURPER_FILE}" SEARCH="hostslurpersmtp" REPLACE="$mailSlurperSmtpHostPort:2500"
+
+# set Service Host Port
+mailSlurperServiceHostPort=8085
+for port in ${MAIL_SLURPER_SERVICE_PORT}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    mailSlurperServiceHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_SLURPER_FILE}" SEARCH="hostslurperservice" REPLACE="$mailSlurperServiceHostPort:8085"
+
+# set WWW Host Port
+mailSlurperWwwHostPort=8080
+for port in ${MAIL_SLURPER_WWW_PORT}
+do
+  if [[ $(ncat -z 127.0.0.1 "${port}" && echo "USE" || echo "FREE") == 'FREE' ]]
+  then
+    mailSlurperWwwHostPort=${port}
+    break
+  fi
+done
+make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIL_SLURPER_FILE}" SEARCH="hostslurperwww" REPLACE="$mailSlurperWwwHostPort:8080"
+
+MAIL_SLURPER_URL="MailSlurper URL: http://${PROJECT_URL}:$mailSlurperWwwHostPort"; export MAIL_SLURPER_URL
+
+printf '\n%s\n' "${GRN}MailSlurper build and deploy have been made successfully.${RST}"

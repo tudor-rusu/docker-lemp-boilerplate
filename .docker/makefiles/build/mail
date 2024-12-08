@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Mail script
+set -e
+
+# Include variables
+source .docker/makefiles/variables.sh
+
+mailSupport=false
+while true; do
+    read -rp "Do you want to add Mail Support to the project? ${RED}[y/N]${RST}: " yn
+    case ${yn} in
+        [Yy]* )
+          mailSupport=true
+          break;;
+        [Nn]* ) break;;
+        * ) break;;
+    esac
+done
+
+if [[ ${mailSupport} = false ]]
+then
+    printf '\n%s\n' "${RED}No mail support.${RST}"
+#    make --no-print-directory remove-script SCRIPT_TYPE="AllMailSupport" #remove all mail support settings
+else
+    echo "${BLU}Build the ${BLD}Mail Support${RST} ${BLU}container${RST}"
+    # chose the Mail engine
+    PS3="Please enter your choice: "
+    options=("MailSlurper" "MailCatcher" "MailHog" "Quit")
+    select opt in "${options[@]}"
+    do
+        case ${opt} in
+            "MailSlurper")
+                COMPOSE_LIST+=("${DOCKER_COMPOSE_MAIL_SLURPER_FILE}")
+                make --no-print-directory mail-slurper COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+                break
+                ;;
+            "MailCatcher")
+                COMPOSE_LIST+=("${DOCKER_COMPOSE_MAIL_CATCHER_FILE}")
+                make --no-print-directory mail-catcher COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+                break
+                ;;
+            "MailHog")
+                COMPOSE_LIST+=("${DOCKER_COMPOSE_MAIL_HOG_FILE}")
+                make --no-print-directory mail-hog COMPOSE_LIST_UPDATED="${COMPOSE_LIST[*]}"
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            * )
+                echo "invalid option $REPLY"
+                break
+                ;;
+        esac
+    done
+fi
