@@ -20,7 +20,7 @@ done
 if [[ ${mailSupport} = false ]]
 then
     printf '\n%s\n' "${RED}No mail support.${RST}"
-#    make --no-print-directory remove-script SCRIPT_TYPE="AllMailSupport" #remove all mail support settings
+    make --no-print-directory remove-script SCRIPT_TYPE="AllMailSupport" #remove all mail support settings
 else
     echo "${BLU}Build the ${BLD}Mail Support${RST} ${BLU}container${RST}"
     # chose the Mail engine
