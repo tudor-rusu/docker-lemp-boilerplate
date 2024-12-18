@@ -13,9 +13,9 @@ if ($env_array['PROJECT_DEBUG'] === true) {
 echo '<strong>PHP</strong> works' ."<br /><br />\n";
 echo '<strong>connect to DB</strong>' ."<br />\n";
 $dbname = 'test';
-$dbuser = 'dev';
-$dbpass = 'dev';
-$dbhost = 'lemp-mysql';
+$dbuser = 'root';
+$dbpass = 'root';
+$dbhost = 'proiect-02-mysql';
 
 // SQLite
 //$ver = SQLite3::version();

@@ -44,7 +44,7 @@ while true; do
         projectUrl="Project URL: https://${PROJECT_URL}"
         echo "${BLU}Generate self-signed SSL Certificate for 365days${RST}"
         make --no-print-directory replace-all-in-file FILE="${DOCKER_COMPOSE_MAIN_FILE}" SEARCH="localhost" REPLACE="${PROJECT_URL}"
-        opensslSubject=$(make fixup-cn-subject CN_SUBJECT="/O=${PROJECT_NAME}/CN=${PROJECT_URL}")
+        opensslSubject=$(make --no-print-directory fixup-cn-subject CN_SUBJECT="/O=${PROJECT_NAME}/CN=${PROJECT_URL}")
         openssl req -subj "${opensslSubject}" -addext "subjectAltName=DNS:${PROJECT_URL},DNS:www.${PROJECT_URL}" -x509 -newkey rsa:4096 -nodes -keyout "${CERT_DIR}"/"${PROJECT_URL}".key -out "${CERT_DIR}"/"${PROJECT_URL}".pem -days 365
         echo "${GRN}HTTPS settings have been made successfully.${RST}"
         break;;
